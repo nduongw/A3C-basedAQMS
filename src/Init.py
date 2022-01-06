@@ -1,5 +1,5 @@
-from Config import Config
-from GenerateMap import *
+from script.Config import Config
+from src.Utils import *
 
 class Init:
     def __init__(self):

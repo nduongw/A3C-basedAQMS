@@ -1,9 +1,9 @@
-from GenerateMap import *
+from Utils import *
 import torch
 
 def calc_reward(car_action, air_map, car_map):
-    car_num = count_car(car_action)[0]
-    total_car = count_car(car_map)[0]
+    car_num = count_car(car_action)
+    total_car = count_car(car_map)
     new_air_map = generate_air_quality_map(car_action)
 
     new_state = torch.rand([air_map.shape[0], air_map.shape[1]])
