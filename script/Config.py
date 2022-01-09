@@ -9,18 +9,18 @@ class Config:
     action_prob = 0.5
     action_range = 2
     #do dai quang duong
-    roadLength = 5
-    # roadLength = 100
-    # roadWidth = 70
-    roadWidth = 5
+    # roadLength = 5
+    roadLength = 100
+    roadWidth = 70
+    # roadWidth = 5
     #so con duong
-    roadNumber = 3
-    generate_prob = 0.5
+    roadNumber = 5
+    generate_prob = 0.85
 
     #list chieu rong cua tung con duong
-    roadWidthList = [1, 1, 1]
-    #list chieu trong cua le duong
-    roadDisList = [1, 1]
+    roadWidthList = [10, 10, 10, 10, 10]
+    #list khoang cach giua cac duong
+    roadDisList = [5, 5, 5, 5]
 
     frame_num = 4
     #do giam su chac chan cua khong khi trong vung duoc bao phu

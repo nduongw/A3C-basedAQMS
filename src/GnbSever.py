@@ -10,8 +10,8 @@ class Network:
     
     def change_on_off(self, prob_map):
         action_map = torch.where(prob_map > Config.action_prob, 1, 0)
-        num_action = count_car(action_map)
-        set_cover_radius(action_map, Config.action_range, num_action)
+        car_list = count_car(action_map)
+        set_cover_radius(action_map, Config.action_range, car_list)
         action = torch.where(self.init_map == action_map, self.init_map, 0)
         self.action.append(action)
         return action
