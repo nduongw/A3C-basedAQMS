@@ -1,5 +1,5 @@
 from script.Config import Config
-from src.Utils import *
+from utils.Utils import *
 
 class Init:
     def __init__(self):
