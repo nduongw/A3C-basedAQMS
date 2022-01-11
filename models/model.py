@@ -2,25 +2,25 @@ import torch.nn as nn
 import torch
  
 class Model(nn.Module):
-    def __init__(self, config):
+    def __init__(self, Config):
         super().__init__()
-        self.batch_size = config.get('batch_size')
-    
-        self.in_channels1 = config.get('conv').get('in_channels1')
-        self.in_channels2 = config.get('conv').get('in_channels2')
-        self.in_channels3 = config.get('conv').get('in_channels3')
+        self.batch_size = Config.get('batch_size')
+        self.Config = Config
+        self.in_channels1 = Config.get('conv').get('in_channels1')
+        self.in_channels2 = Config.get('conv').get('in_channels2')
+        self.in_channels3 = Config.get('conv').get('in_channels3')
 
-        self.out_channels1 = config.get('conv').get('out_channels1')
-        self.out_channels2 = config.get('conv').get('out_channels2')
-        self.out_channels3 = config.get('conv').get('out_channels3')
+        self.out_channels1 = Config.get('conv').get('out_channels1')
+        self.out_channels2 = Config.get('conv').get('out_channels2')
+        self.out_channels3 = Config.get('conv').get('out_channels3')
 
-        self.kernel_size1 = config.get('conv').get('kernel_size1')
-        self.kernel_size2 = config.get('conv').get('kernel_size2')
-        self.kernel_size3 = config.get('conv').get('kernel_size3')
+        self.kernel_size1 = Config.get('conv').get('kernel_size1')
+        self.kernel_size2 = Config.get('conv').get('kernel_size2')
+        self.kernel_size3 = Config.get('conv').get('kernel_size3')
 
-        self.input_size = config.get('lstm').get('input_size')
-        self.hidden_size = config.get('lstm').get('hidden_size')
-        self.num_layers = config.get('lstm').get('num_layers')
+        self.input_size = Config.get('lstm').get('input_size')
+        self.hidden_size = Config.get('lstm').get('hidden_size')
+        self.num_layers = Config.get('lstm').get('num_layers')
 
 
         # 3 1D-Conv layer
@@ -54,7 +54,7 @@ class Model(nn.Module):
         out = out_lstm[:,]
 
         out_v = self.fc_v(out)
-        out_p = self.fc_p(out).view(H, W)
+        out_p = self.fc_p(out).view(self.Config.get('roadLength'), self.Config.get('roadWidth'))
 
         return out_p, out_v
 

@@ -26,3 +26,28 @@ frame_num : 5
 air_discount : 0.2
 
 simulation_time : 1000
+
+batch_size: 
+conv:
+  in_channels1: 1
+  out_channels1: 64
+  kernel_size1: 5
+
+  in_channels2: 64
+  out_channels2: 32
+  kernel_size2: 3
+
+  in_channels3: 32
+  out_channels3: 16
+  kernel_size3: 1
+
+  # in_features_fc:
+  out_features_fc: 24
+  kernel_size_maxpool: 3
+  stride_maxpool: 1 
+  padding_maxpool: 1
+
+lstm:
+  # input_size: 3
+  hidden_size: 128
+  num_layers: 1

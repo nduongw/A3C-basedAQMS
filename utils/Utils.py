@@ -1,4 +1,3 @@
-from script.Config import Config
 import random
 import torch
 
@@ -7,19 +6,19 @@ road_dist = []
 state_list = []
 time = 0
 
-def generate_map():
-    for i in range(Config.roadNumber):
-        roadi = torch.rand(Config.roadLength, Config.roadWidthList[i])
+def generate_map(Config):
+    for i in range(Config.get('roadNumber')):
+        roadi = torch.rand(Config.get('roadLength'), Config.get('roadWidthList[i]'))
         for u in range (roadi.size()[0]):
             for v in range(roadi.size()[1]):
-                if roadi[u, v] > Config.generate_prob:
+                if roadi[u, v] > Config.get('generate_prob'):
                     roadi[u, v] = 1
                 else : 
                     roadi[u, v] = 0
         road.append(roadi)
 
-        if i < Config.roadNumber - 1:
-            roadi = torch.zeros(Config.roadLength, Config.roadDisList[i])
+        if i < Config.get('roadNumber') - 1:
+            roadi = torch.zeros(Config.get('roadLength'), Config.get('roadDisList[i]'))
             road.append(roadi)
 
     new_road = torch.hstack([*road])
@@ -46,13 +45,13 @@ def set_cover_radius(road, cover_radius, car_list):
                 cover_map[i, j] = 1
     return cover_map
 
-def generate_air_quality_map(road):
+def generate_air_quality_map(road, Config):
     car_list = count_car(road)
     print(len(car_list))
-    cover_map = set_cover_radius(road, Config.cover_radius, car_list)
+    cover_map = set_cover_radius(road, Config.get('cover_radius'), car_list)
     return cover_map
 
-def get_coordinate_dis():
+def get_coordinate_dis(Config):
     list_coord = []
     a = 0
     for i in range(Config.roadNumber - 1):
