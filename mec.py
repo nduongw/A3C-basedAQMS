@@ -1,5 +1,6 @@
 from utils.GnbSever import Network
 from utils.Init import Init
+from utils.Reward import calc_reward
 from utils.Utils import *
 import matplotlib.pyplot as plt
 import seaborn as sns
@@ -22,19 +23,19 @@ MAX_EP = 3000
 with open('config/hyperparameter.yaml') as f:
     Config = yaml.safe_load(f)
 
-init = Init(Config)
-init.create_map()
-print(init.map)
-init.set_cover_radius()
-x = []
-y = []
-sns.set_theme()
-plt.figure(figsize=(10, 7))
-plt.xlim([0, 70])
-plt.ylim([0, 100])
+# init = Init(Config)
+# init.create_map()
+# print(init.map)
+# init.set_cover_radius()
+# x = []
+# y = []
+# sns.set_theme()
+# plt.figure(figsize=(10, 7))
+# plt.xlim([0, 70])
+# plt.ylim([0, 100])
 # plt.margins(0)
-plt.xticks(np.arange(0, 80, step=10))
-plt.yticks(np.arange(0, 110, step=10))
+# plt.xticks(np.arange(0, 80, step=10))
+# plt.yticks(np.arange(0, 110, step=10))
 
 # print(init.map)
 # init.set_cover_radius()
@@ -102,32 +103,32 @@ class Net(Model):
 
 
 class Worker(mp.Process):
-    def __init__(self, gnet, opt, global_ep, global_ep_r, res_queue, name, Config):
+    def __init__(self, env, gnet, opt, global_ep, global_ep_r, res_queue, name, Config):
         super(Worker, self).__init__()
         self.name = 'w%02i' % name
         self.g_ep, self.g_ep_r, self.res_queue = global_ep, global_ep_r, res_queue
         self.gnet, self.opt = gnet, opt
         self.lnet = Model(Config)           # local network
+        self.env = env
         # self.env = gym.make('CartPole-v0').unwrapped
 
     def run(self):
         total_step = 1
         while self.g_ep.value < MAX_EP:
-            s = self.env.reset()
+            state = self.env.create_map()
             buffer_s, buffer_a, buffer_r = [], [], []
             ep_r = 0.
             while True:
-                if self.name == 'w00':
-                    self.env.render()
-                a = self.lnet.choose_action(v_wrap(s[None, :]))
-                s_, r, done, _ = self.env.step(a)
-                if done: r = -1
-                ep_r += r
-                buffer_a.append(a)
-                buffer_s.append(s)
-                buffer_r.append(r)
+                action_map = self.lnet.choose_action(v_wrap(s[None, :]))  #dong nay co van de
+                cover_map = self.state[0]
+                new_state = self.env.recalc_cover_map(action_map)
+                reward = calc_reward(action,cover_map, new_state[1], new_state[0])
+                ep_r += reward
+                buffer_a.append(action_map)
+                buffer_s.append(state)
+                buffer_r.append(reward)
 
-                if total_step % UPDATE_GLOBAL_ITER == 0 or done:  # update global and assign to local net
+                if total_step % UPDATE_GLOBAL_ITER == 0:  # update global and assign to local net
                     # sync
                     push_and_pull(self.opt, self.lnet, self.gnet, done, s_, buffer_s, buffer_a, buffer_r, GAMMA)
                     buffer_s, buffer_a, buffer_r = [], [], []
@@ -135,20 +136,24 @@ class Worker(mp.Process):
                     if done:  # done and print information
                         record(self.g_ep, self.g_ep_r, ep_r, self.res_queue, self.name)
                         break
-                s = s_
+                state = new_state
                 total_step += 1
         self.res_queue.put(None)
 
 
 
 if __name__=='__main__':
+    envs = []
     gnet = Net()
     gnet.share_memory()
     opt = SharedAdam(gnet.parameters(), lr=1e-4, betas=(0.92, 0.999))
     global_ep, global_ep_r, res_queue = mp.Value('i', 0), mp.Value('d', 0.), mp.Queue()
 
+    for i in range(mp.cpu_count()):
+        env = Init(Config)
+        envs.append(env)
     # parallel training
-    workers = [Worker(gnet, opt, global_ep, global_ep_r, res_queue, i, Config) for i in range(mp.cpu_count())]
+    workers = [Worker(envs[i], gnet, opt, global_ep, global_ep_r, res_queue, i, Config) for i in range(mp.cpu_count())]
     [w.start() for w in workers]
 
     [w.join() for w in workers]
