@@ -8,10 +8,10 @@ cover_radius : 3
 action_prob : 0.5
 action_range : 2
 #do dai quang duong
-roadLength : 5
+road_length : 5
 # roadLength : 100
 # roadWidth : 70
-roadWidth : 5
+road_width : 5
 #so con duong
 roadNumber : 3
 generate_prob : 0.5
