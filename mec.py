@@ -1,5 +1,10 @@
 from utils.GnbSever import Network
+<<<<<<< HEAD
 from utils.Map import Map
+=======
+from utils.Init import Init
+from utils.Reward import calc_reward
+>>>>>>> 205365fcb77b1841bf5f1ebb5bf7980d720d3e58
 from utils.Utils import *
 import matplotlib.pyplot as plt
 import seaborn as sns
@@ -27,8 +32,8 @@ plt.figure(figsize=(10, 7))
 plt.xlim([0, 70])
 plt.ylim([0, 100])
 # plt.margins(0)
-plt.xticks(np.arange(0, 80, step=10))
-plt.yticks(np.arange(0, 110, step=10))
+# plt.xticks(np.arange(0, 80, step=10))
+# plt.yticks(np.arange(0, 110, step=10))
 
 # print(init.map)
 # init.set_cover_radius()
