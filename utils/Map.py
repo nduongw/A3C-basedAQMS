@@ -1,7 +1,7 @@
 
 from utils.Utils import *
 
-class Init:
+class Map:
     def __init__(self, Config):
         self.Config = Config
         self.map = torch.zeros(Config.get('roadLength'), Config.get('roadWidth'))
@@ -9,11 +9,12 @@ class Init:
         self.time = 0
     
     def create_map(self):
-        self.map = generate_map(self.Config)   
+        self.map = generate_map(self.Config)
+        return self.map
 
     def set_cover_radius(self):
         cover_map = generate_air_quality_map(self.map, self.Config)
-        self.cover_map.append(cover_map)
+        return cover_map
 
     def run_per_second(self):
         # if self.time == 0:

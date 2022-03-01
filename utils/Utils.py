@@ -8,7 +8,7 @@ time = 0
 
 def generate_map(Config):
     for i in range(Config.get('roadNumber')):
-        roadi = torch.rand(Config.get('roadLength'), Config.get('roadWidthList[i]'))
+        roadi = torch.rand(Config.get('roadLength'), Config.get('roadWidthList')[i])
         for u in range (roadi.size()[0]):
             for v in range(roadi.size()[1]):
                 if roadi[u, v] > Config.get('generate_prob'):
@@ -18,7 +18,7 @@ def generate_map(Config):
         road.append(roadi)
 
         if i < Config.get('roadNumber') - 1:
-            roadi = torch.zeros(Config.get('roadLength'), Config.get('roadDisList[i]'))
+            roadi = torch.zeros(Config.get('roadLength'), Config.get('roadDisList')[i])
             road.append(roadi)
 
     new_road = torch.hstack([*road])
