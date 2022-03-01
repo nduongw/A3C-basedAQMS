@@ -1,11 +1,8 @@
 import torch
 
-road = []
-road_dist = []
-state_list = []
-time = 0
-
 def generate_map(Config):
+    road = []
+
     for i in range(Config.get('roadNumber')):
         roadi = torch.rand(Config.get('roadLength'), Config.get('roadWidthList')[i])
         for u in range (roadi.size()[0]):
@@ -46,7 +43,6 @@ def set_cover_radius(road, cover_radius, car_list):
 
 def generate_air_quality_map(road, Config):
     car_list = count_car(road)
-    print(len(car_list))
     cover_map = set_cover_radius(road, Config.get('cover_radius'), car_list)
     return cover_map
 

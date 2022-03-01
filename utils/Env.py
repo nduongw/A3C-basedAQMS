@@ -1,19 +1,25 @@
+import numpy as np
 from Map import Map
 
 
 class Env:
     def __init__(self, config):
-        self.map = Map().create_map()
-        self.cover_map = Map().set_cover_radius()
+        self.env = Map(config)
 
     def reset(self):
-        self.state_map_1 = Map().create_map()
-        self.cover_map_1 = Map().set_cover_radius()
+        self.env.create_map()
 
-    def step(action):
-        pass
+    def step(self, prob):
+        action = self.env.map_to_action(prob)
+        reward = self.env.step(action)
+        obs = self.run()
+
+        return obs, reward
 
     def run(self):
+        obs = []
         for _ in range(4):
-            self.map.
-    
+            s, c = self.env.run_per_second()
+            obs.append(np.stack(s, c))
+        
+        return obs
