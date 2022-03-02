@@ -4,9 +4,12 @@ from utils.Map import Map
 class Env:
     def __init__(self, config):
         self.env = Map(config)
+        self.config = config
 
     def reset(self):
         self.env.create_map()
+        obs = self.run()
+        return obs
 
     def step(self, prob):
         action = self.env.map_to_action(prob)
@@ -17,7 +20,7 @@ class Env:
 
     def run(self):
         obs = []
-        for _ in range(4):
+        for _ in range(self.config.get("num_frame")):
             s, c = self.env.run_per_second()
             obs.append(np.stack(s, c))
         
