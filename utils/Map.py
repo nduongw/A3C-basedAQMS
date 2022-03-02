@@ -2,8 +2,8 @@ import random
 import numpy as np
 import yaml
 
-from Utils import *
-from Reward import calc_reward
+from utils.Utils import *
+from utils.Reward import calc_reward
 
 
 class Map:
@@ -16,7 +16,7 @@ class Map:
         self.map = generate_map(self.Config)
         self.cover_map = generate_air_quality_map(self.map, self.Config)
         # return np.stack(self.map, self.cover_map)
-        return self.map, self.cover_map
+        # return self.map, self.cover_map
 
     def run_per_second(self):
         # cho xe di chuyen
@@ -44,24 +44,23 @@ class Map:
         previous_map = self.cover_map
         previous_map -= self.Config.get('air_discount') * previous_map
         zeros_tensor = torch.zeros(previous_map.size())
-        previous_map = torch.where(previous_map > 0, previous_map, zeros_tensor)
-        self.cover_map = previous_map
+        after_map = torch.where(previous_map > 0, previous_map, zeros_tensor)
+        self.cover_map = after_map
         return self.map, self.cover_map
 
-    def step(self, prob_map):
-        action = self.map_to_action(prob_map)
-        new_map = torch.zeros(self.Config.get('road_length'), self.Config.get('road_width'))
-        cover_map = set_cover_radius(new_map, self.Config.get('cover_radius'), action)
-        new_cover_map = torch.where(self.map > cover_map, self.map, cover_map)
-        reward = calc_reward(action, self.cover_map, self.map, new_cover_map)
+    def step(self, action):
+        car_list = count_car(action)
+        cover_map = set_cover_radius(action, self.Config.get('cover_radius'), car_list)
+        new_cover_map = torch.where(cover_map > self.cover_map, cover_map, self.cover_map)
+        reward = calc_reward(action, self.cover_map, self.map, new_cover_map, self.Config)
         self.cover_map = new_cover_map
 
-        return self.map, self.cover_map, reward
+        return reward
 
     def map_to_action(self, prob_map):
         on_off_map = torch.where(prob_map > self.Config.get('action_prob'), 1, 0)
         num_car = count_car(on_off_map)
         action_map = set_cover_radius(on_off_map, self.Config.get('action_range'), num_car)
-        action = torch.where(self.init_map == action_map, self.init_map, 0)
+        action = torch.where(self.map == action_map, 1, 0)
         return action
 

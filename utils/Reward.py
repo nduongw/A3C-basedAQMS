@@ -1,18 +1,20 @@
+from math import gamma
 from utils.Utils import *
 import torch
 
-def calc_reward(action, cover_map, map, cover_map_prime):
-    car_num = count_car(action)
+def calc_reward(action, cover_map, map, new_cover_map, Config):
+    num_car_on = count_car(action)
     total_car = count_car(map)
 
-    new_state = torch.rand([cover_map.shape[0], cover_map.shape[1]])
-    for i in range(new_state.shape[0]):
-        for j in range(new_state.shape[1]):
-            new_state[i, j] = max(cover_map_prime[i, j], cover_map[i, j])
+    alpha = Config.get("alpha")
+    beta = Config.get("beta")
+    gamma = Config.get("gamma")
 
-    total_cover = new_state - cover_map - (1 - cover_map)
-    total_packet = car_num / total_car
+    reward_time_on = (new_cover_map - cover_map).sum()/torch.count_nonzero(new_cover_map - cover_map).item()
+    reward_time_off = (1 - cover_map).sum()/(cover_map.size()[0] * cover_map.size()[1])
+    reward_packet = len(num_car_on) / len(total_car)
+    reward_overlap = new_cover_map.sum()/action.sum()
 
-    reward = total_cover - total_packet
+    reward = alpha*reward_time_on + beta*reward_time_off + gamma*reward_packet + (1 - alpha - beta - gamma)*reward_overlap
 
     return reward

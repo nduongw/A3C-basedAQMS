@@ -24,6 +24,9 @@ road_dis_list : [1, 1]
 
 #do giam su chac chan cua khong khi trong vung duoc bao phu
 air_discount : 0.2
+alpha : 0.25
+beta : 0.25
+gamma : 0.25
 
 simulation_time : 1000
 

@@ -8,17 +8,22 @@ from utils.Reward import calc_reward
 with open('config/hyperparameter.yaml') as f:
     Config = yaml.safe_load(f)
 
-demo = Map(Config)
-s0, _ = demo.create_map()
-# for i in range(5):
-#     for j in range(5):
-#         if s0[i, j] == 1:
-#             print(i, j)
-s1, _ = demo.run_per_second()
-print(s0)
-print('\n')
-# print(c0)
+
+env = Env(config=Config)
+obs = env.reset()
+print(obs)
+
+# demo = Map(Config)
+# s0, _ = demo.create_map()
+# # for i in range(5):
+# #     for j in range(5):
+# #         if s0[i, j] == 1:
+# #             print(i, j)
+# s1, _ = demo.run_per_second()
+# print(s0)
 # print('\n')
-print(s1)
+# # print(c0)
+# # print('\n')
+# print(s1)
 # print('\n')
 # print(c1)
