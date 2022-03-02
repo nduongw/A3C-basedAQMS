@@ -1,12 +1,8 @@
 import random
 import numpy as np
-import yaml
 
-from Utils import *
-from Reward import calc_reward
-
-with open('config/hyperparameter.yaml') as f:
-    Config = yaml.safe_load(f)
+from utils.Utils import *
+from utils.Reward import calc_reward
 
 class Map:
     def __init__(self, Config):
@@ -67,7 +63,7 @@ class Map:
         action = torch.where(self.init_map == action_map, self.init_map, 0)
         return action
 
-demo = Map(Config)
-a1, a2 = demo.create_map()
-print(a1)
-print(a2)
+# demo = Map(Config)
+# a1, a2 = demo.create_map()
+# print(a1)
+# print(a2)

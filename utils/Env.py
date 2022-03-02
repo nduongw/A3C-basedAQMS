@@ -1,6 +1,5 @@
 import numpy as np
-from Map import Map
-
+from utils.Map import Map
 
 class Env:
     def __init__(self, config):

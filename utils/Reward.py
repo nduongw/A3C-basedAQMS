@@ -1,4 +1,4 @@
-from Utils import *
+from utils.Utils import *
 import torch
 
 def calc_reward(action, cover_map, map, cover_map_prime):
