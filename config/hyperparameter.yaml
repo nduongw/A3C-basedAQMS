@@ -22,7 +22,6 @@ road_width_list : [1, 1, 1]
 #list chieu trong cua le duong
 road_dis_list : [1, 1]
 
-frame_num : 5
 #do giam su chac chan cua khong khi trong vung duoc bao phu
 air_discount : 0.2
 

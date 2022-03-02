@@ -5,6 +5,7 @@ from Map import Map
 class Env:
     def __init__(self, config):
         self.env = Map(config)
+        self.config = config
 
     def reset(self):
         self.env.create_map()
@@ -19,7 +20,7 @@ class Env:
 
     def run(self):
         obs = []
-        for _ in range(4):
+        for _ in range(self.config.get("num_frame")):
             s, c = self.env.run_per_second()
             obs.append(np.stack(s, c))
 

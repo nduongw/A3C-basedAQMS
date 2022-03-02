@@ -50,7 +50,7 @@ class Map:
 
     def step(self, prob_map):
         action = self.map_to_action(prob_map)
-        new_map = torch.zeros(self.Config.get('roadLength'), self.Config.get('roadWidth'))
+        new_map = torch.zeros(self.Config.get('road_length'), self.Config.get('road_width'))
         cover_map = set_cover_radius(new_map, self.Config.get('cover_radius'), action)
         new_cover_map = torch.where(self.map > cover_map, self.map, cover_map)
         reward = calc_reward(action, self.cover_map, self.map, new_cover_map)
