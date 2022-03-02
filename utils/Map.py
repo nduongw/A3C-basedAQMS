@@ -18,9 +18,11 @@ class Map:
 
     def run_per_second(self):
         # cho xe di chuyen
+        print(self.map.shape[0], self.map.shape[1])
         for i in range(self.map.shape[0] - 1, -1, -1):
             for j in range(self.map.shape[1] - 1, -1, -1):
                 if self.map[i, j] == 1:
+                    print(i, j)
                     speed = random.randint(1, 2)
                     if i + speed > self.map.shape[0] - 1:
                         self.map[i, j] = 0
@@ -45,6 +47,13 @@ class Map:
         previous_map = torch.where(previous_map > 0, previous_map, zeros_tensor)
         self.cover_map = previous_map
         return self.map, self.cover_map
+        # for i in range(self.map.shape[0]):
+        #     for j in range(self.map.shape[1]):
+        #         if self.map[i, j] == 1:
+        #             print(i, j)
+        return 1, 0
+        # print(self.map.shape[0], self.map.shape[1])
+
     
     def step(self, prob_map):
         action = self.map_to_action(prob_map)
@@ -54,7 +63,7 @@ class Map:
         reward = calc_reward(action, self.cover_map, self.map, new_cover_map)
         self.cover_map = new_cover_map
 
-        return self.map, self.cover_map, reward
+        return reward
     
     def map_to_action(self, prob_map):
         on_off_map = torch.where(prob_map > self.Config.get('action_prob'), 1, 0)

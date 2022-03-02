@@ -10,6 +10,10 @@ with open('config/hyperparameter.yaml') as f:
 
 demo = Map(Config)
 s0, _ = demo.create_map()
+# for i in range(5):
+#     for j in range(5):
+#         if s0[i, j] == 1:
+#             print(i, j)
 s1, _ = demo.run_per_second()
 print(s0)
 print('\n')
