@@ -13,8 +13,8 @@ class Env:
 
         return obs
 
-    def step(self, prob):
-        action = self.env.map_to_action(prob)
+    def step(self, action):
+        # action = self.env.map_to_action(prob)
         reward = self.env.step(action)
         obs = self.run()
 

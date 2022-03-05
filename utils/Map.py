@@ -1,6 +1,4 @@
 import random
-import numpy as np
-import yaml
 
 from utils.Utils import *
 from utils.Reward import calc_reward
