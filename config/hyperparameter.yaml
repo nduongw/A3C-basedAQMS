@@ -10,23 +10,29 @@ action_prob : 0.5
 action_range : 2
 
 #do dai quang duong
-road_length : 5
-road_width : 5
+road_length : 400
+road_width : 400
 
 #so con duong
 road_number : 3
 generate_prob : 0.5
 
 #list chieu rong cua tung con duong
-road_width_list : [1, 1, 1]
+road_width_list : [100, 100, 100]
 #list chieu trong cua le duong
-road_dis_list : [1, 1]
+road_dis_list : [50, 50]
 
 #do giam su chac chan cua khong khi trong vung duoc bao phu
 air_discount : 0.2
 alpha : 0.25
 beta : 0.25
 theta : 0.25
+
+n_train_processes : 3
+learning_rate: 0.0002
+update_interval : 5
+gamma : 0.98
+max_train_steps : 60000
 
 simulation_time : 1000
 

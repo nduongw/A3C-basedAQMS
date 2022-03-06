@@ -77,18 +77,19 @@ PRINT_INTERVAL = update_interval * 100
 def test(step_idx, model):
     env = Env(Config)
     score = 0.0
-    done = False
+    done = 0
     num_test = 10
 
     for _ in range(num_test):
         s = env.reset()
-        while not done:
-            prob = model.pi(torch.from_numpy(s).float(), softmax_dim=0)
-            # a = Categorical(prob).sample().numpy()
-            s_prime, r, done, info = env.step(a)
+        while done <10:
+            prob = model.pi(torch.from_numpy(s).float()).detach()
+            a = env.env.map_to_action(prob) # (n_env, h, w)
+            s_prime, r = env.step(a)
             s = s_prime
             score += r
-        done = False
+            done += 1
+        
     print(f"Step # :{step_idx}, avg score : {score/num_test:.1f}")
 
     env.close()
@@ -105,7 +106,7 @@ if __name__ == '__main__':
     while step_idx < max_train_steps:
         s_list, a_list, r_list = list(), list(), list()
         for _ in range(update_interval):
-            prob = model.pi(torch.from_numpy(s).float()) #(n_env, h, w)
+            prob = model.pi(torch.from_numpy(s).float()).detach() #(n_env, h, w)
             # a = Categorical(prob).sample().numpy()
             a = envs.choose_action(prob) # (n_env, h, w)
             s_prime, r = envs.step(a)   # (n_env, num_frame, 2, h, w) and (n_env, 1)
@@ -117,16 +118,16 @@ if __name__ == '__main__':
 
             s = s_prime
             step_idx += 1
-
+        
         s_final = torch.from_numpy(s_prime).float()     # (n_env, num_frame, 2, h, w)
         v_final = model.v(s_final).detach().clone().numpy()     # (n_env, 1)
         td_target = compute_target(v_final, r_list)     # (update_interval, n_env)
 
         td_target_vec = td_target.reshape(-1)       # (update_interval*n_env) nối update_interval hàng thành 1 hàng
         # s_vec = torch.tensor(s_list).float().reshape(-1, 4)  # 4 == Dimension of state
-        s_vec = torch.cat(s_list).float()       #(n_env*len(s_list), num_frame, 2, h, w)
+        s_vec = torch.from_numpy(np.concatenate(s_list)).float()       #(n_env*len(s_list), num_frame, 2, h, w)
         # a_vec = torch.tensor(a_list).reshape(-1).unsqueeze(1)
-        a_vec = torch.cat(a_list).float()       #(n_env*len(s_list), h, w)
+        a_vec = torch.from_numpy(np.concatenate(a_list)).float()       #(n_env*len(s_list), h, w)
         advantage = td_target_vec - model.v(s_vec).reshape(-1)      #(update_interval*n_env)
 
         pi = model.pi(s_vec)        #(n_env*len(s_list), h, w)

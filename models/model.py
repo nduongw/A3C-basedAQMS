@@ -4,7 +4,6 @@ import torch
 class Model(nn.Module):
     def __init__(self, Config):
         super().__init__()
-        self.batch_size = Config.get('batch_size')
         self.Config = Config
         self.in_channels1 = Config.get('cnn').get('in_channels1')
         self.in_channels2 = Config.get('cnn').get('in_channels2')
@@ -28,19 +27,22 @@ class Model(nn.Module):
         self.conv3 = nn.Conv2d(in_channels=self.in_channels3, out_channels=self.out_channels3, kernel_size=self.kernel_size3, padding='same')
 
         # batchnorm
-        self.batchnorm1 = nn.BatchNorm1d(self.out_channels1)
-        self.batchnorm2 = nn.BatchNorm1d(self.out_channels2)
-        self.batchnorm3 = nn.BatchNorm1d(self.out_channels3)
+        self.batchnorm1 = nn.BatchNorm2d(self.out_channels1)
+        self.batchnorm2 = nn.BatchNorm2d(self.out_channels2)
+        self.batchnorm3 = nn.BatchNorm2d(self.out_channels3)
 
+        self.relu = nn.ReLU()
         self.pool = nn.MaxPool2d(kernel_size=2, stride=2)
         self.flatten = nn.Flatten()
 
         self.fc_v = nn.Linear(in_features=self.hidden_size, out_features=1)
     
     def shared_layers(self, x):
+
         # x = (n_env, num_frame, 2, h, w)
         self.height_map = x.size()[3]
         self.width_map = x.size()[4]
+        self.batchsize = x.size()[0]
 
         hidden = self.init_hidden()
         out_cnn = []
@@ -51,9 +53,9 @@ class Model(nn.Module):
             out_conv2 = self.pool(self.relu(self.batchnorm2(self.conv2(out_conv1))))
             out_conv3 = self.pool(self.relu(self.batchnorm3(self.conv3(out_conv2))))
             out_flatten = self.flatten(out_conv3)
-            out_cnn.append(out_flatten)
+            out_cnn.append(torch.unsqueeze(out_flatten, dim=1))
         
-        self.lstm_input_size = self.height_map/8 * self.width_map/8 * self.Config.get('cnn').get('out_channels3')
+        self.lstm_input_size = out_cnn[0].size()[2]
         self.lstm = nn.LSTM(input_size= self.lstm_input_size, hidden_size=self.hidden_size, num_layers=self.num_layers, batch_first=True)
 
         in_lstm = torch.cat(out_cnn, 1)  # in_lstm = (n_env, num_frame, h/8 * w/8 * out_channel3)
@@ -69,7 +71,7 @@ class Model(nn.Module):
         self.fc_pi = nn.Linear(in_features=self.hidden_size, out_features=self.height_map*self.width_map)
 
         out_fc = self.fc_pi(out_shared_layers).view(-1, self.height_map, self.width_map)
-        prob = nn.Sigmoid(out_fc)
+        prob = nn.Sigmoid()(out_fc)
         return prob
 
     def v(self, x):
@@ -79,7 +81,7 @@ class Model(nn.Module):
         return value
 
     def init_hidden(self) :
-        h0 = torch.zeros((self.num_layers, self.batchsize,self.hidden_size))
-        c0 = torch.zeros((self.num_layers, self.batchsize,self.hidden_size))
+        h0 = torch.zeros((self.num_layers, self.batchsize, self.hidden_size))
+        c0 = torch.zeros((self.num_layers, self.batchsize, self.hidden_size))
         hidden = (h0,c0)
         return hidden

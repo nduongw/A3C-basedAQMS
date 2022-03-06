@@ -19,44 +19,42 @@ gamma = Config.get("gamma")
 class ActorCritic(nn.Module):
     def __init__(self):
         super(ActorCritic, self).__init__()
-        self.model = Model()
+        self.model = Model(Config)
 
-    def pi(self, x, softmax_dim=1):
-        x = F.relu(self.fc1(x))
-        x, _ = self.model(x)
-        prob = F.softmax(x, dim=softmax_dim)
+    def pi(self, x):
+        prob = self.model.pi(x)
         return prob
 
     def v(self, x):
-        _, v = self.model(x)
+        v = self.model.v(x)
         return v
 
 def worker(worker_id, master_end, worker_end):
     master_end.close()  # Forbid worker to use the master end for messaging
-    Env = Env(Config)
-    Env.seed(worker_id)
+    env = Env(Config)
+    env.seed(worker_id)
 
     while True:
         cmd, para = worker_end.recv()
         if cmd == 'step':
-            ob, reward = Env.step(para)
+            ob, reward = env.step(para)
             # if done:
-            #     ob = Env.reset()
+            #     ob = env.reset()
             worker_end.send((ob, reward))
         elif cmd == 'choose_action':
-            action = Env.env.map_to_action(para)
+            action = env.env.map_to_action(para)
             worker_end.send(action)
         elif cmd == 'reset':
-            ob = Env.reset()
+            ob = env.reset()
             worker_end.send(ob)
         elif cmd == 'reset_task':
-            ob = Env.reset_task()
+            ob = env.reset_task()
             worker_end.send(ob)
         elif cmd == 'close':
             worker_end.close()
             break
         elif cmd == 'get_spaces':
-            worker_end.send((Env.observation_space, Env.action_space))
+            worker_end.send((env.observation_space, env.action_space))
         else:
             raise NotImplementedError
 
@@ -96,8 +94,8 @@ class ParallelEnv:
             master_end.send(('reset', None))
         return np.stack([master_end.recv() for master_end in self.master_ends])
 
-    def choose_action(self, prob):
-        for master_end in self.master_ends:
+    def choose_action(self, probs):
+        for master_end, prob in zip(self.master_ends, probs):
             master_end.send(('choose_action', prob))
         return np.stack([master_end.recv() for master_end in self.master_ends])
 
@@ -124,4 +122,4 @@ def compute_target(v_final, r_lst):
         G = r + gamma * G 
         td_target.append(G)
 
-    return torch.tensor(td_target[::-1]).float()
+    return torch.tensor(np.array(td_target[::-1])).float()

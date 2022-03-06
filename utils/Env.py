@@ -28,4 +28,7 @@ class Env:
             obs.append(np.stack((s, c)))
 
         return obs 
+    
+    def seed(self, seed):
+        pass
 

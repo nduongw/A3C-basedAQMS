@@ -24,7 +24,7 @@ def count_car(road):
     car_list = []
     for i in range(road.shape[0]):
         for j in range(road.shape[1]):
-            if road[i, j] == 1:
+            if road[i, j].item() == 1:
                 car_list.append([i, j])
     return car_list
 
