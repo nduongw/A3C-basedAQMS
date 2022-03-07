@@ -13,14 +13,13 @@ class Map:
     def create_map(self):
         self.map = generate_map(self.Config)
         self.cover_map = generate_air_quality_map(self.map, self.Config)
-        # return np.stack(self.map, self.cover_map)
-        # return self.map, self.cover_map
 
     def run_per_second(self):
         # cho xe di chuyen
         for i in range(self.map.shape[0] - 1, -1, -1):
             for j in range(self.map.shape[1] - 1, -1, -1):
                 if self.map[i, j] == 1:
+                    # print(f'car {i} {j}')
                     speed = random.randint(1, 2)
                     if i + speed > self.map.shape[0] - 1:
                         self.map[i, j] = 0
@@ -31,9 +30,10 @@ class Map:
         #tao xe ngau nhien 
         for i in range(self.map.shape[0]):
             for j in range(self.map.shape[1]):
-                if self.map[i, j] == 0 and i < 2 and j not in get_coordinate_dis(self.Config):
+                if self.map[i, j] == 0 and i < self.Config.get('car_spawn_idx') and j not in get_coordinate_dis(self.Config):
                     a = random.random()
-                    if a > 0.02:
+                    # print(a)
+                    if a < self.Config.get('car_spawn_prob'):
                         self.map[i, j] = 0
                     else:
                         self.map[i, j] = 1

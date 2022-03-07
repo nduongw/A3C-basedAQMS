@@ -1,5 +1,6 @@
 import numpy as np
 from utils.Map import Map
+import torch
 
 
 class Env:
@@ -30,5 +31,6 @@ class Env:
         return obs 
     
     def seed(self, seed):
-        pass
+        torch.manual_seed(seed)
+        np.random.seed(seed)
 

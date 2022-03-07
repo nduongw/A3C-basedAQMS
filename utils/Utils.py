@@ -44,6 +44,7 @@ def generate_air_quality_map(road, Config):
     cover_map = set_cover_radius(road, Config.get('cover_radius'), car_list)
     return cover_map
 
+#tra ve list la index cua le duong
 def get_coordinate_dis(Config):
     list_coord = []
     a = 0
@@ -58,5 +59,6 @@ def get_coordinate_dis(Config):
             a += Config.get('road_width_list')[i] + Config.get('road_dis_list')[i - 1]
             for j in range(a, a + Config.get('road_dis_list')[i]):    
                 list_coord.append(j)
+
     return list_coord
     
