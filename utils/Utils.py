@@ -18,6 +18,7 @@ def generate_map(Config):
             road.append(roadi)
 
     new_road = torch.hstack([*road])
+
     return new_road
 
 def count_car(road):
@@ -26,6 +27,7 @@ def count_car(road):
         for j in range(road.shape[1]):
             if road[i, j].item() == 1:
                 car_list.append([i, j])
+
     return car_list
 
 def set_cover_radius(road, cover_radius, car_list):
@@ -37,11 +39,13 @@ def set_cover_radius(road, cover_radius, car_list):
         for i in range (max(car[0] - cover_radius, 0), 1 + min(car[0] + cover_radius, road.shape[0] - 1)):
             for j in range(max(car[1] - cover_radius, 0),1 + min(car[1] + cover_radius, road.shape[1] - 1)):
                 cover_map[i, j] = 1
+
     return cover_map
 
 def generate_air_quality_map(road, Config):
     car_list = count_car(road)
     cover_map = set_cover_radius(road, Config.get('cover_radius'), car_list)
+    
     return cover_map
 
 #tra ve list la index cua le duong

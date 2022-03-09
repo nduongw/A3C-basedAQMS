@@ -14,6 +14,6 @@ def calc_reward(action, cover_map, map, new_cover_map, Config):
     reward_packet = len(num_car_on) / len(total_car)
     reward_overlap = new_cover_map.sum()/action.sum()
 
-    reward = alpha*reward_time_on + beta*reward_time_off + theta*reward_packet + (1 - alpha - beta - theta)*reward_overlap
+    reward = alpha*reward_time_on - beta*reward_time_off - theta*reward_packet - (1 - alpha - beta - theta)*reward_overlap
 
     return reward

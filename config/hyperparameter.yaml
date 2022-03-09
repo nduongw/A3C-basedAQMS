@@ -1,62 +1,56 @@
-# chu ki do chat luong khong khi
-cycle_time : 2
-# khoang thoi gian chat luong khong khi thay doi
-changing_time : 3600
-# do bao phu cua xe
-cover_radius : 1
+change_time: 15
+cover_radius: 5
 
-num_frame : 4
-action_prob : 0.5
-action_range : 2
+num_frame: 4
+action_prob: 0.5
+action_range: 2
 
-#do dai quang duong
-road_length : 240
-road_width : 240
+road_length: 250
+road_width: 42
 
-#so con duong
-road_number : 3
-generate_prob : 0.7
-car_spawn_idx : 2
-car_spawn_prob : 0.66
+road_number: 2
+generate_prob: 0.995
 
-road_width_list : [70, 70, 70]
-road_dis_list : [15, 15]
+road_width_list: [20, 20]
+road_dis_list: [2]
 
-#do giam su chac chan cua khong khi trong vung duoc bao phu
-air_discount : 0.2
-alpha : 0.25
-beta : 0.25
-theta : 0.25
+car_spawn_idx: 2
+car_spawn_prob: 0.01
+car_speed_min: 3
+car_speed_max: 5
 
-n_train_processes : 2
-learning_rate: 0.0002
-update_interval : 5
-gamma : 0.98
-max_train_steps : 1000
+air_discount: 0.05
+alpha: 0.2
+beta: 0.2
+theta: 0.2
 
-simulation_time : 1000
+n_train_processes: 4
+learning_rate: 0.0001
+update_interval: 5
+gamma: 0.99
+max_train_steps: 5000
 
-batch_size: 
+batch_size:
 cnn:
-  in_channels1: 2
-  out_channels1: 32
-  kernel_size1: 5
+    in_channels1: 2
+    out_channels1: 32
+    kernel_size1: 5
 
-  in_channels2: 32
-  out_channels2: 16
-  kernel_size2: 3
+    in_channels2: 32
+    out_channels2: 16
+    kernel_size2: 3
 
-  in_channels3: 16
-  out_channels3: 8
-  kernel_size3: 1
+    in_channels3: 16
+    out_channels3: 8
+    kernel_size3: 1
 
-  # in_features_fc:
-  out_features_fc: 24
-  kernel_size_maxpool: 3
-  stride_maxpool: 1 
-  padding_maxpool: 1
+    # in_features_fc:
+    out_features_fc: 24
+    kernel_size_maxpool: 3
+    stride_maxpool: 1
+    padding_maxpool: 1
 
 lstm:
-  # input_size: 3
-  hidden_size: 64
-  num_layers: 1
+    # input_size: 3
+    hidden_size: 64
+    num_layers: 1

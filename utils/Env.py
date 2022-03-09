@@ -2,7 +2,6 @@ import numpy as np
 from utils.Map import Map
 import torch
 
-
 class Env:
     def __init__(self, config):
         self.env = Map(config)
@@ -15,7 +14,6 @@ class Env:
         return obs
 
     def step(self, action):
-        # action = self.env.map_to_action(prob)
         reward = self.env.step(action)
         obs = self.run()
 

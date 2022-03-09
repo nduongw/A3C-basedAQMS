@@ -2,17 +2,13 @@ import yaml
 import torch
 import torch.nn as nn
 import numpy as np
-import torch.nn.functional as F
 import torch.multiprocessing as mp
-
 
 from models.model import Model
 from utils.Env import Env
 
-
 with open('config/hyperparameter.yaml') as f:
     Config = yaml.safe_load(f)
-
 
 gamma = Config.get("gamma")
 
@@ -38,8 +34,6 @@ def worker(worker_id, master_end, worker_end):
         cmd, para = worker_end.recv()
         if cmd == 'step':
             ob, reward = env.step(para)
-            # if done:
-            #     ob = env.reset()
             worker_end.send((ob, reward))
         elif cmd == 'choose_action':
             action = env.env.map_to_action(para)
