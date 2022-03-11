@@ -1,7 +1,7 @@
 import random
 
 from utils.Utils import *
-from utils.Reward import calc_reward
+from utils.Reward_v2 import calc_reward
 
 class Map:
     def __init__(self, Config):
@@ -54,9 +54,6 @@ class Map:
 
     def map_to_action(self, prob_map):
         on_off_map = torch.where(prob_map > self.Config.get('action_prob'), 1, 0)
-        # num_car = count_car(on_off_map)
-        # action_map = set_cover_radius(on_off_map, self.Config.get('action_range'), num_car)
-        # action = torch.where(self.map == action_map, 1, 0)
         action = self.map * on_off_map.to('cpu')
         return action
 
