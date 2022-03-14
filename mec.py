@@ -54,8 +54,7 @@ if __name__ == '__main__':
     envs = ParallelEnv(n_train_processes)
     wandb.init(project="MEC-project", entity="mec")
     model = ActorCritic().to(device)
-    optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate)
-
+    optimizer = torch.optim.Adam(model.model.parameters(), lr=learning_rate)
     step_idx = 0
     s = envs.reset()        #(n_env, num_frame, 2, h, w)
     policy_loss = []
@@ -91,12 +90,18 @@ if __name__ == '__main__':
             
         pi = model.pi(s_vec.to(device))        #(n_env*len(s_list), h, w)
         # pi_a = pi.gather(1, a_vec).reshape(-1)
-        pi_a_on = torch.mean(pi*a_vec, dim=(1, 2)) #(update_interval*n_env)
-        pi_a_off = torch.mean(1 - pi*(map_xe_vec - a_vec), dim=(1, 2)) #(update_interval*n_env)
-        loss = -(torch.log(pi_a_on + pi_a_off) * advantage.detach()).mean() +\
+        zeros_map = torch.zeros_like(pi)
+        ones_map = torch.ones_like(pi)
+
+        pi_on = torch.where(pi*a_vec == zeros_map, ones_map, pi*a_vec)
+        pi_off = torch.where(1 - pi*(map_xe_vec - a_vec) == zeros_map, ones_map, 1 - pi*(map_xe_vec - a_vec))
+
+        pi_a_on = torch.mean(torch.log(pi_on), dim=(1, 2)) #(update_interval*n_env)
+        pi_a_off = torch.mean(torch.log(pi_off), dim=(1, 2)) #(update_interval*n_env)
+        loss = -((pi_a_on + pi_a_off) * advantage.detach()).mean() +\
             F.smooth_l1_loss(model.v(s_vec.to(device)).reshape(-1), td_target_vec)
 
-        policy_loss.append(-(torch.log(pi_a_on + pi_a_off) * advantage.detach()).mean())
+        policy_loss.append(((pi_a_on + pi_a_off) * advantage.detach()).mean())
         value_loss.append(F.smooth_l1_loss(model.v(s_vec.to(device)).reshape(-1), td_target_vec))
         optimizer.zero_grad()
         loss.backward()

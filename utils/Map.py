@@ -1,7 +1,7 @@
 import random
 
 from utils.Utils import *
-from utils.Reward_v2 import calc_reward
+from utils.Reward_v3 import calc_reward
 
 class Map:
     def __init__(self, Config):
@@ -45,7 +45,7 @@ class Map:
 
     def step(self, action):
         car_list = count_car(action)
-        new_cover_map = set_cover_radius(action, self.Config.get('cover_radius'), car_list)
+        new_cover_map = set_cover_radius(action, car_list)
         new_cover_map = torch.where(new_cover_map > self.cover_map, new_cover_map, self.cover_map)
         reward = calc_reward(action, self.cover_map, self.map, new_cover_map, self.Config)
         self.cover_map = new_cover_map
