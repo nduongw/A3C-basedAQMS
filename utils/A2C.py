@@ -112,7 +112,7 @@ def compute_target(v_final, r_lst):
     G = v_final.reshape(-1)
     td_target = list()
 
-    for r in r_lst:
+    for r in r_lst[::-1]:
         G = r + gamma * G 
         td_target.append(G)
 
