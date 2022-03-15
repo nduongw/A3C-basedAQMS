@@ -50,9 +50,9 @@ class Model(nn.Module):
 
         for i in range(self.Config.get("num_frame")):
             xi = x[:,i,:,:,:]    # xi = (n_env, 2, h, w)
-            out_conv1 = self.pool(self.relu(self.batchnorm1(self.conv1(xi))))
-            out_conv2 = self.pool(self.relu(self.batchnorm2(self.conv2(out_conv1))))
-            out_conv3 = self.pool(self.relu(self.batchnorm3(self.conv3(out_conv2))))
+            out_conv1 = self.pool(self.relu(self.conv1(xi)))
+            out_conv2 = self.pool(self.relu(self.conv2(out_conv1)))
+            out_conv3 = self.pool(self.relu(self.conv3(out_conv2)))
             out_flatten = self.flatten(out_conv3)       # (n_env, n)
             out_cnn.append(torch.unsqueeze(out_flatten, dim=1)) # (n_env, 1, n)
         
