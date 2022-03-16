@@ -27,7 +27,7 @@ class Env:
             s, c = self.env.run_per_second()
             self.queue.append(np.stack((s, c)))
         else :
-            s, c = self.env.run_per_second()
+            s, c = self.env.map, self.env.cover_map
             for _ in range(self.config.get('num_frame')):
                 self.queue.append(np.stack((s, c)))
 

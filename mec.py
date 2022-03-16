@@ -1,6 +1,7 @@
 import torch 
 import torch.multiprocessing as mp
 import torch.nn.functional as F
+import torch.nn as nn
 import numpy as np
 import yaml
 import wandb
@@ -17,7 +18,7 @@ learning_rate = Config.get("learning_rate")
 update_interval = Config.get("update_interval")
 max_train_steps = Config.get("max_train_steps")
 
-PRINT_INTERVAL = update_interval * 5
+PRINT_INTERVAL = update_interval * 2
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 def test(step_idx, model, env):
@@ -49,17 +50,18 @@ def test(step_idx, model, env):
     wandb.log({'avg_score': score/num_test, 'avg_cover_radius': sum(cover_lst) / len(cover_lst), 'avg_sent_package': sum(sent_lst) / len(sent_lst)})
 
 if __name__ == '__main__':
-    env = Env(Config)
     mp.set_start_method('spawn')
-    envs = ParallelEnv(n_train_processes)
-    wandb.init(project="MEC-project", entity="mec")
-    model = ActorCritic().to(device)
-    optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate)
+    wandb.init(project="MEC-project", entity="mec", name='remove batchnorm, prob = 0.5, rw3, steps = 10000, 2 processes')
 
+    env = Env(Config)
+    envs = ParallelEnv(n_train_processes)
+    model = ActorCritic().to(device)
+    optimizer = torch.optim.Adam(model.model.parameters(), lr=learning_rate)
+    
     step_idx = 0
-    s = envs.reset()        #(n_env, num_frame, 2, h, w)
     policy_loss = []
     value_loss = []
+    s = envs.reset()        #(n_env, num_frame, 2, h, w)
 
     while step_idx < max_train_steps:
         s_list, a_list, r_list = list(), list(), list()
@@ -71,7 +73,6 @@ if __name__ == '__main__':
             s_list.append(s)
             a_list.append(a)
             r_list.append(r)
-            # mask_list.append(1 - done)
 
             s = s_prime
             step_idx += 1
@@ -91,13 +92,19 @@ if __name__ == '__main__':
             
         pi = model.pi(s_vec.to(device))        #(n_env*len(s_list), h, w)
         # pi_a = pi.gather(1, a_vec).reshape(-1)
-        pi_a_on = torch.mean(pi*a_vec, dim=(1, 2)) #(update_interval*n_env)
-        pi_a_off = torch.mean(1 - pi*(map_xe_vec - a_vec), dim=(1, 2)) #(update_interval*n_env)
-        loss = -(torch.log(pi_a_on + pi_a_off) * advantage.detach()).mean() +\
-            F.smooth_l1_loss(model.v(s_vec.to(device)).reshape(-1), td_target_vec)
+        zeros_map = torch.zeros_like(pi)
+        ones_map = torch.ones_like(pi)
 
-        policy_loss.append(-(torch.log(pi_a_on + pi_a_off) * advantage.detach()).mean())
-        value_loss.append(F.smooth_l1_loss(model.v(s_vec.to(device)).reshape(-1), td_target_vec))
+        pi_on = torch.where(pi*a_vec == zeros_map, ones_map, pi*a_vec)
+        pi_off = torch.where(1 - pi*(map_xe_vec - a_vec) == zeros_map, ones_map, 1 - pi*(map_xe_vec - a_vec))
+
+        pi_a_on = torch.mean(torch.log(pi_on), dim=(1, 2)) #(update_interval*n_env)
+        pi_a_off = torch.mean(torch.log(pi_off), dim=(1, 2)) #(update_interval*n_env)
+        loss = -((pi_a_on + pi_a_off) * advantage.detach()).mean() +\
+            nn.MSELoss()(model.v(s_vec.to(device)).reshape(-1), td_target_vec)
+
+        policy_loss.append(((pi_a_on + pi_a_off) * advantage.detach()).mean())
+        value_loss.append(nn.MSELoss()(model.v(s_vec.to(device)).reshape(-1), td_target_vec))
         optimizer.zero_grad()
         loss.backward()
         optimizer.step()
