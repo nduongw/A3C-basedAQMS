@@ -51,7 +51,7 @@ def test(step_idx, model, env):
 
 if __name__ == '__main__':
     mp.set_start_method('spawn')
-    wandb.init(project="MEC-project", entity="mec", name='fix init lstm fc_pi; modify v_list, pi_list, lr = 0.0001, prob = 0.5, rw3, steps = 5000, 2 processes')
+    # wandb.init(project="MEC-project", entity="mec", name='fix init lstm fc_pi; modify v_list, pi_list, lr = 0.0001, prob = 0.5, rw3, steps = 5000, 2 processes')
 
     env = Env(Config)
     envs = ParallelEnv(n_train_processes)
@@ -66,7 +66,7 @@ if __name__ == '__main__':
     while step_idx < max_train_steps:
         s_list, a_list, r_list, v_list, pi_list = list(), list(), list(), list(), list()
         for _ in range(update_interval):
-            prob = model.pi(torch.from_numpy(s).float().to(device))#.detach() #(n_env, h, w)
+            prob = model.pi(torch.from_numpy(s).float().to(device)) #(n_env, h, w)
             v = model.v(torch.from_numpy(s).float().to(device)) #(n_env, 1)
             a = envs.choose_action(prob.detach()) # (n_env, h, w)
             s_prime, r = envs.step(a)   # (n_env, num_frame, 2, h, w) and (n_env, 1)
@@ -80,6 +80,7 @@ if __name__ == '__main__':
 
             s = s_prime
             step_idx += 1
+        import pdb; pdb.set_trace()
         s_final = torch.from_numpy(s_prime).float()     # (n_env, num_frame, 2, h, w)
         v_final = model.v(s_final.to(device)).to('cpu').detach().clone().numpy()     # (n_env, 1)
         td_target = compute_target(v_final, r_list)     # (update_interval, n_env)
@@ -90,7 +91,7 @@ if __name__ == '__main__':
         map_car_vec = s_vec[:,-1, 0, :, :].detach().clone().to(device)   #(n_env*len(s_list), h, w)
         # a_vec = torch.tensor(a_list).reshape(-1).unsqueeze(1)
         a_vec = torch.from_numpy(np.concatenate(a_list)).float().to(device)      #(n_env*len(s_list), h, w)
-        advantage = td_target_vec - torch.squeeze(torch.cat(v_list,dim=0))      #(update_interval*n_env)
+        advantage = td_target_vec - (torch.cat(v_list,dim=0))    #(update_interval*n_env)
 
         pi = torch.cat(pi_list, dim=0)
         # pi = model.pi(s_vec.to(device))        #(n_env*len(s_list), h, w)
@@ -104,10 +105,10 @@ if __name__ == '__main__':
         pi_a_on = torch.mean(torch.log(pi_on), dim=(1, 2)) #(update_interval*n_env)
         pi_a_off = torch.mean(torch.log(pi_off), dim=(1, 2)) #(update_interval*n_env)
         loss = -((pi_a_on + pi_a_off) * advantage.detach()).mean() +\
-            nn.MSELoss()(torch.squeeze(torch.cat(v_list,dim=0)), td_target_vec)
+            nn.MSELoss()(torch.cat(v_list,dim=0), td_target_vec)
 
         policy_loss.append(((pi_a_on + pi_a_off) * advantage.detach()).mean())
-        value_loss.append(nn.MSELoss()(torch.squeeze(torch.cat(v_list,dim=0)), td_target_vec))
+        value_loss.append(nn.MSELoss()(torch.cat(v_list,dim=0), td_target_vec))
         optimizer.zero_grad()
         loss.backward()
         optimizer.step()
