@@ -51,7 +51,7 @@ def test(step_idx, model, env):
 
 if __name__ == '__main__':
     mp.set_start_method('spawn')
-    wandb.init(project="MEC-project", entity="mec", name='remove batchnorm, prob = 0.5, rw3, steps = 10000, 2 processes')
+    # wandb.init(project="MEC-project", entity="mec", name='fix init lstm fc_pi; modify v_list, pi_list, lr = 0.0001, prob = 0.5, rw3, steps = 5000, 2 processes')
 
     env = Env(Config)
     envs = ParallelEnv(n_train_processes)
@@ -64,19 +64,23 @@ if __name__ == '__main__':
     s = envs.reset()        #(n_env, num_frame, 2, h, w)
 
     while step_idx < max_train_steps:
-        s_list, a_list, r_list = list(), list(), list()
+        s_list, a_list, r_list, v_list, pi_list = list(), list(), list(), list(), list()
         for _ in range(update_interval):
-            prob = model.pi(torch.from_numpy(s).float().to(device)).detach() #(n_env, h, w)
-            a = envs.choose_action(prob) # (n_env, h, w)
+            prob = model.pi(torch.from_numpy(s).float().to(device)) #(n_env, h, w)
+            v = model.v(torch.from_numpy(s).float().to(device)) #(n_env, 1)
+            a = envs.choose_action(prob.detach()) # (n_env, h, w)
             s_prime, r = envs.step(a)   # (n_env, num_frame, 2, h, w) and (n_env, 1)
 
             s_list.append(s)
             a_list.append(a)
             r_list.append(r)
 
+            v_list.append(v)
+            pi_list.append(prob)
+
             s = s_prime
             step_idx += 1
-        
+        import pdb; pdb.set_trace()
         s_final = torch.from_numpy(s_prime).float()     # (n_env, num_frame, 2, h, w)
         v_final = model.v(s_final.to(device)).to('cpu').detach().clone().numpy()     # (n_env, 1)
         td_target = compute_target(v_final, r_list)     # (update_interval, n_env)
@@ -84,27 +88,27 @@ if __name__ == '__main__':
         td_target_vec = td_target.reshape(-1).to(device)      # (update_interval*n_env) nối update_interval hàng thành 1 hàng
         # s_vec = torch.tensor(s_list).float().reshape(-1, 4)  # 4 == Dimension of state
         s_vec = torch.from_numpy(np.concatenate(s_list)).float()       #(n_env*len(s_list), num_frame, 2, h, w)
-        map_xe_vec = s_vec[:,-1, 0, :, :].detach().clone().to(device)   #(n_env*len(s_list), h, w)
+        map_car_vec = s_vec[:,-1, 0, :, :].detach().clone().to(device)   #(n_env*len(s_list), h, w)
         # a_vec = torch.tensor(a_list).reshape(-1).unsqueeze(1)
         a_vec = torch.from_numpy(np.concatenate(a_list)).float().to(device)      #(n_env*len(s_list), h, w)
-        advantage = td_target_vec - model.v(s_vec.to(device)).reshape(-1)      #(update_interval*n_env)
+        advantage = td_target_vec - (torch.cat(v_list,dim=0))    #(update_interval*n_env)
 
-            
-        pi = model.pi(s_vec.to(device))        #(n_env*len(s_list), h, w)
+        pi = torch.cat(pi_list, dim=0)
+        # pi = model.pi(s_vec.to(device))        #(n_env*len(s_list), h, w)
         # pi_a = pi.gather(1, a_vec).reshape(-1)
         zeros_map = torch.zeros_like(pi)
         ones_map = torch.ones_like(pi)
 
         pi_on = torch.where(pi*a_vec == zeros_map, ones_map, pi*a_vec)
-        pi_off = torch.where(1 - pi*(map_xe_vec - a_vec) == zeros_map, ones_map, 1 - pi*(map_xe_vec - a_vec))
+        pi_off = torch.where(1 - pi*(map_car_vec - a_vec) == zeros_map, ones_map, 1 - pi*(map_car_vec - a_vec))
 
         pi_a_on = torch.mean(torch.log(pi_on), dim=(1, 2)) #(update_interval*n_env)
         pi_a_off = torch.mean(torch.log(pi_off), dim=(1, 2)) #(update_interval*n_env)
         loss = -((pi_a_on + pi_a_off) * advantage.detach()).mean() +\
-            nn.MSELoss()(model.v(s_vec.to(device)).reshape(-1), td_target_vec)
+            nn.MSELoss()(torch.cat(v_list,dim=0), td_target_vec)
 
         policy_loss.append(((pi_a_on + pi_a_off) * advantage.detach()).mean())
-        value_loss.append(nn.MSELoss()(model.v(s_vec.to(device)).reshape(-1), td_target_vec))
+        value_loss.append(nn.MSELoss()(torch.cat(v_list,dim=0), td_target_vec))
         optimizer.zero_grad()
         loss.backward()
         optimizer.step()
