@@ -1,0 +1,18 @@
+
+Step :25, avg score : nan, avg_cover_radius :  0.00, avg_sent_package:  0.00
+Traceback (most recent call last):
+  File "/home/aiotlab/projects/cuongdm/MEC1/mec.py", line 70, in <module>
+    s_prime, r = envs.step(a)   # (n_env, num_frame, 2, h, w) and (n_env, 1)
+  File "/home/aiotlab/projects/cuongdm/MEC1/utils/A2C.py", line 98, in step
+    return self.step_wait()
+  File "/home/aiotlab/projects/cuongdm/MEC1/utils/A2C.py", line 81, in step_wait
+    results = [master_end.recv() for master_end in self.master_ends]
+  File "/home/aiotlab/projects/cuongdm/MEC1/utils/A2C.py", line 81, in <listcomp>
+    results = [master_end.recv() for master_end in self.master_ends]
+  File "/home/aiotlab/anaconda3/envs/thanhnt_vaipe/lib/python3.9/multiprocessing/connection.py", line 255, in recv
+    buf = self._recv_bytes()
+  File "/home/aiotlab/anaconda3/envs/thanhnt_vaipe/lib/python3.9/multiprocessing/connection.py", line 419, in _recv_bytes
+    buf = self._recv(4)
+  File "/home/aiotlab/anaconda3/envs/thanhnt_vaipe/lib/python3.9/multiprocessing/connection.py", line 384, in _recv
+    chunk = read(handle, remaining)
+KeyboardInterrupt

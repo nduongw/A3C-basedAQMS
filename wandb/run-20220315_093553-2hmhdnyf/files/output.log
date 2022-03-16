@@ -1,0 +1,17 @@
+> /home/aiotlab/projects/cuongdm/MEC1/mec.py(110)<module>()
+-> loss.backward()
+
+
+(Pdb) --KeyboardInterrupt--
+(Pdb)
+Traceback (most recent call last):
+  File "mec.py", line 110, in <module>
+    loss.backward()
+  File "mec.py", line 110, in <module>
+    loss.backward()
+  File "/home/aiotlab/anaconda3/lib/python3.8/bdb.py", line 88, in trace_dispatch
+    return self.dispatch_line(frame)
+  File "/home/aiotlab/anaconda3/lib/python3.8/bdb.py", line 113, in dispatch_line
+    if self.quitting: raise BdbQuit
+
+(Pdb) q

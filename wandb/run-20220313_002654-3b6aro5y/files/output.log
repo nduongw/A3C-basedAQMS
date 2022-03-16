@@ -1,0 +1,20 @@
+
+Step :25, avg score : -0.0, avg_cover_radius :  86.35, avg_sent_package:  50.71
+Step :50, avg score : -0.0, avg_cover_radius :  87.21, avg_sent_package:  50.64
+Step :75, avg score : -0.0, avg_cover_radius :  87.66, avg_sent_package:  50.18
+Step :100, avg score : -0.0, avg_cover_radius :  87.49, avg_sent_package:  49.88
+Step :125, avg score : -0.0, avg_cover_radius :  86.77, avg_sent_package:  50.28
+Step :150, avg score : -0.0, avg_cover_radius :  87.53, avg_sent_package:  49.95
+Step :175, avg score : -0.0, avg_cover_radius :  87.28, avg_sent_package:  50.04
+Step :200, avg score : -0.0, avg_cover_radius :  87.14, avg_sent_package:  49.62
+Step :225, avg score : -0.0, avg_cover_radius :  86.52, avg_sent_package:  49.44
+Step :250, avg score : -0.0, avg_cover_radius :  87.36, avg_sent_package:  50.34
+Step :275, avg score : -0.0, avg_cover_radius :  87.66, avg_sent_package:  51.17
+Traceback (most recent call last):
+  File "/home/aiotlab/projects/cuongdm/MEC1/mec.py", line 116, in <module>
+    test(step_idx, model, env)
+  File "/home/aiotlab/projects/cuongdm/MEC1/mec.py", line 36, in test
+    send_car = len(count_car(a))
+  File "/home/aiotlab/projects/cuongdm/MEC1/utils/Utils.py", line 28, in count_car
+    if road[i, j].item() == 1:
+KeyboardInterrupt

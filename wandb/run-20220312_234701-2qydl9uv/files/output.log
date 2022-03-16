@@ -1,0 +1,12 @@
+Traceback (most recent call last):
+  File "/home/aiotlab/projects/cuongdm/MEC1/mec.py", line 112, in <module>
+    test(step_idx, model, env)
+  File "/home/aiotlab/projects/cuongdm/MEC1/mec.py", line 38, in test
+    s_prime, r = env.step(a)
+  File "/home/aiotlab/projects/cuongdm/MEC1/utils/Env.py", line 21, in step
+    obs = self.run()
+  File "/home/aiotlab/projects/cuongdm/MEC1/utils/Env.py", line 27, in run
+    s, c = self.env.run_per_second()
+  File "/home/aiotlab/projects/cuongdm/MEC1/utils/Map.py", line 30, in run_per_second
+    if self.map[i, j] == 0 and i < self.Config.get('car_spawn_idx') and j not in get_coordinate_dis(self.Config):
+KeyboardInterrupt

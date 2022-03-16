@@ -1,0 +1,31 @@
+
+Step :25, avg score : -2.3, avg_cover_radius :  69.80, avg_sent_package:  50.15
+Step :50, avg score : -1.6, avg_cover_radius :  82.08, avg_sent_package:  50.83
+Step :75, avg score : -1.5, avg_cover_radius :  83.62, avg_sent_package:  50.57
+Step :100, avg score : -1.7, avg_cover_radius :  77.10, avg_sent_package:  48.24
+Step :125, avg score : -1.7, avg_cover_radius :  79.31, avg_sent_package:  49.79
+Step :150, avg score : -1.9, avg_cover_radius :  76.00, avg_sent_package:  50.05
+Step :175, avg score : -1.8, avg_cover_radius :  77.46, avg_sent_package:  49.82
+Step :200, avg score : -2.0, avg_cover_radius :  72.49, avg_sent_package:  49.33
+Step :225, avg score : -1.6, avg_cover_radius :  80.19, avg_sent_package:  49.73
+Step :250, avg score : -2.0, avg_cover_radius :  77.02, avg_sent_package:  49.89
+Step :275, avg score : -1.8, avg_cover_radius :  79.33, avg_sent_package:  51.00
+Step :300, avg score : -1.7, avg_cover_radius :  81.52, avg_sent_package:  49.86
+Step :325, avg score : -2.0, avg_cover_radius :  77.38, avg_sent_package:  49.84
+Step :350, avg score : -1.5, avg_cover_radius :  82.78, avg_sent_package:  49.88
+Step :375, avg score : -1.7, avg_cover_radius :  81.57, avg_sent_package:  50.51
+Step :400, avg score : -1.8, avg_cover_radius :  79.31, avg_sent_package:  50.14
+Traceback (most recent call last):
+  File "/home/aiotlab/projects/cuongdm/MEC1/mec.py", line 111, in <module>
+    test(step_idx, model, env)
+  File "/home/aiotlab/projects/cuongdm/MEC1/mec.py", line 37, in test
+    s_prime, r = env.step(a)
+  File "/home/aiotlab/projects/cuongdm/MEC1/utils/Env.py", line 20, in step
+    reward = self.env.step(action)
+  File "/home/aiotlab/projects/cuongdm/MEC1/utils/Map.py", line 50, in step
+    reward = calc_reward(action, self.cover_map, self.map, new_cover_map, self.Config)
+  File "/home/aiotlab/projects/cuongdm/MEC1/utils/Reward_v2.py", line 7, in calc_reward
+    total_car = count_car(present_map)
+  File "/home/aiotlab/projects/cuongdm/MEC1/utils/Utils.py", line 28, in count_car
+    if road[i, j].item() == 1:
+KeyboardInterrupt

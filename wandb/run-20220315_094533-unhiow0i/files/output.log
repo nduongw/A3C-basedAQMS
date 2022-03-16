@@ -1,0 +1,54 @@
+> /home/aiotlab/projects/cuongdm/MEC1/mec.py(110)<module>()
+-> loss.backward()
+
+
+
+
+
+
+(Pdb) model.model.paarameters()
+<generator object Module.parameters at 0x7fd15ad2cb30>
+
+
+
+
+
+
+
+(Pdb) print(model.model.parameter())
+*** AttributeError: 'Model' object has no attribute 'parameter'
+
+(Pdb) print(model.model.parameters())
+<generator object Module.parameters at 0x7fd15ad407b0>
+(Pdb) for name, param in model.named_parameters():
+*** SyntaxError: unexpected EOF while parsing
+(Pdb)     if param.requires_grad:
+*** SyntaxError: unexpected EOF while parsing
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+(Pdb) print(para for para in model.model.parameters())
+<generator object <genexpr> at 0x7fd15ad49660>
+(Pdb)
+Traceback (most recent call last):
+  File "mec.py", line 110, in <module>
+    for name, param in model.named_parameters():
+  File "mec.py", line 110, in <module>
+    for name, param in model.named_parameters():
+  File "/home/aiotlab/anaconda3/lib/python3.8/bdb.py", line 88, in trace_dispatch
+    return self.dispatch_line(frame)
+  File "/home/aiotlab/anaconda3/lib/python3.8/bdb.py", line 113, in dispatch_line
+    if self.quitting: raise BdbQuit
+
+(Pdb) q

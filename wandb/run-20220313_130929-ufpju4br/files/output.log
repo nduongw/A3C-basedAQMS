@@ -1,0 +1,12 @@
+Traceback (most recent call last):
+  File "/home/aiotlab/projects/cuongdm/MEC1/mec.py", line 69, in <module>
+    a = envs.choose_action(prob) # (n_env, h, w)
+  File "/home/aiotlab/projects/cuongdm/MEC1/utils/A2C.py", line 93, in choose_action
+    master_end.send(('choose_action', prob))
+  File "/home/aiotlab/anaconda3/envs/thanhnt_vaipe/lib/python3.9/multiprocessing/connection.py", line 211, in send
+    self._send_bytes(_ForkingPickler.dumps(obj))
+  File "/home/aiotlab/anaconda3/envs/thanhnt_vaipe/lib/python3.9/multiprocessing/reduction.py", line 51, in dumps
+    cls(buf, protocol).dump(obj)
+  File "/home/aiotlab/anaconda3/envs/thanhnt_vaipe/lib/python3.9/site-packages/torch/multiprocessing/reductions.py", line 247, in reduce_tensor
+    event_sync_required) = storage._share_cuda_()
+RuntimeError: falseINTERNAL ASSERT FAILED at "/opt/conda/conda-bld/pytorch_1639180487213/work/aten/src/ATen/MapAllocator.cpp":263, please report a bug to PyTorch. unable to open shared memory object </torch_30682_0> in read-write mode

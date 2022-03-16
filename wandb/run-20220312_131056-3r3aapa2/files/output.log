@@ -1,0 +1,159 @@
+
+Step :25, avg score : -2.2, avg_cover_radius :  76.10, avg_sent_package:  49.65
+Step :50, avg score : -1.8, avg_cover_radius :  81.99, avg_sent_package:  48.44
+Step :75, avg score : -1.8, avg_cover_radius :  82.93, avg_sent_package:  49.83
+Step :100, avg score : -2.0, avg_cover_radius :  80.56, avg_sent_package:  50.45
+Step :125, avg score : -2.3, avg_cover_radius :  79.02, avg_sent_package:  51.02
+Step :150, avg score : -1.6, avg_cover_radius :  84.40, avg_sent_package:  49.51
+Step :175, avg score : -2.0, avg_cover_radius :  79.63, avg_sent_package:  49.73
+Step :200, avg score : -2.8, avg_cover_radius :  72.73, avg_sent_package:  49.57
+Step :225, avg score : -1.9, avg_cover_radius :  81.96, avg_sent_package:  49.66
+Step :250, avg score : -1.8, avg_cover_radius :  78.88, avg_sent_package:  48.58
+Step :275, avg score : -1.8, avg_cover_radius :  80.47, avg_sent_package:  49.81
+Step :300, avg score : -1.8, avg_cover_radius :  81.45, avg_sent_package:  49.67
+Step :325, avg score : -2.3, avg_cover_radius :  77.30, avg_sent_package:  48.75
+Step :350, avg score : -1.9, avg_cover_radius :  80.68, avg_sent_package:  50.55
+Step :375, avg score : -2.0, avg_cover_radius :  81.15, avg_sent_package:  49.93
+Step :400, avg score : -1.9, avg_cover_radius :  80.42, avg_sent_package:  50.57
+Step :425, avg score : -2.4, avg_cover_radius :  75.40, avg_sent_package:  50.57
+Step :450, avg score : -2.0, avg_cover_radius :  78.65, avg_sent_package:  49.66
+Step :475, avg score : -2.3, avg_cover_radius :  77.96, avg_sent_package:  50.50
+Step :500, avg score : -2.7, avg_cover_radius :  70.58, avg_sent_package:  49.40
+Step :525, avg score : -1.7, avg_cover_radius :  83.25, avg_sent_package:  50.70
+Step :550, avg score : -2.4, avg_cover_radius :  77.84, avg_sent_package:  50.43
+Step :575, avg score : -2.1, avg_cover_radius :  79.92, avg_sent_package:  49.65
+Step :600, avg score : -2.5, avg_cover_radius :  75.77, avg_sent_package:  49.80
+Step :625, avg score : -1.9, avg_cover_radius :  80.99, avg_sent_package:  49.94
+Step :650, avg score : -2.3, avg_cover_radius :  76.77, avg_sent_package:  50.34
+Step :675, avg score : -1.9, avg_cover_radius :  79.87, avg_sent_package:  49.72
+Step :700, avg score : -1.8, avg_cover_radius :  81.59, avg_sent_package:  49.54
+Step :725, avg score : -2.2, avg_cover_radius :  77.45, avg_sent_package:  49.79
+Step :750, avg score : -1.9, avg_cover_radius :  79.00, avg_sent_package:  49.82
+Step :775, avg score : -2.3, avg_cover_radius :  76.05, avg_sent_package:  49.43
+Step :800, avg score : -2.1, avg_cover_radius :  77.84, avg_sent_package:  49.89
+Step :825, avg score : -2.3, avg_cover_radius :  77.05, avg_sent_package:  49.32
+Step :850, avg score : -2.5, avg_cover_radius :  74.55, avg_sent_package:  49.09
+Step :875, avg score : -2.2, avg_cover_radius :  78.79, avg_sent_package:  50.07
+Step :900, avg score : -1.7, avg_cover_radius :  81.14, avg_sent_package:  49.04
+Step :925, avg score : -2.2, avg_cover_radius :  79.37, avg_sent_package:  50.00
+Step :950, avg score : -2.8, avg_cover_radius :  73.14, avg_sent_package:  51.31
+Step :975, avg score : -3.2, avg_cover_radius :  70.46, avg_sent_package:  51.10
+Step :1000, avg score : -2.3, avg_cover_radius :  75.60, avg_sent_package:  48.80
+Step :1025, avg score : -2.3, avg_cover_radius :  75.12, avg_sent_package:  49.79
+Step :1050, avg score : -2.0, avg_cover_radius :  79.30, avg_sent_package:  50.34
+Step :1075, avg score : -2.0, avg_cover_radius :  79.90, avg_sent_package:  50.29
+Step :1100, avg score : -1.5, avg_cover_radius :  85.36, avg_sent_package:  50.14
+Step :1125, avg score : -1.8, avg_cover_radius :  84.62, avg_sent_package:  50.49
+Step :1150, avg score : -2.6, avg_cover_radius :  70.74, avg_sent_package:  50.00
+Step :1175, avg score : -2.1, avg_cover_radius :  77.78, avg_sent_package:  50.14
+Step :1200, avg score : -2.2, avg_cover_radius :  80.50, avg_sent_package:  50.69
+Step :1225, avg score : -1.8, avg_cover_radius :  84.02, avg_sent_package:  50.29
+Step :1250, avg score : -2.6, avg_cover_radius :  75.07, avg_sent_package:  50.22
+Step :1275, avg score : -2.0, avg_cover_radius :  79.59, avg_sent_package:  50.03
+Step :1300, avg score : -2.0, avg_cover_radius :  79.85, avg_sent_package:  49.07
+Step :1325, avg score : -1.8, avg_cover_radius :  84.10, avg_sent_package:  49.64
+Step :1350, avg score : -1.8, avg_cover_radius :  81.31, avg_sent_package:  49.98
+Step :1375, avg score : -1.9, avg_cover_radius :  77.74, avg_sent_package:  50.46
+Step :1400, avg score : -2.3, avg_cover_radius :  79.30, avg_sent_package:  50.52
+Step :1425, avg score : -2.1, avg_cover_radius :  80.19, avg_sent_package:  50.28
+Step :1450, avg score : -2.4, avg_cover_radius :  76.82, avg_sent_package:  49.89
+Step :1475, avg score : -2.1, avg_cover_radius :  79.27, avg_sent_package:  49.76
+Step :1500, avg score : -1.9, avg_cover_radius :  79.74, avg_sent_package:  50.21
+Step :1525, avg score : -2.6, avg_cover_radius :  72.98, avg_sent_package:  49.51
+Step :1550, avg score : -2.1, avg_cover_radius :  79.26, avg_sent_package:  49.03
+Step :1575, avg score : -2.1, avg_cover_radius :  78.77, avg_sent_package:  51.01
+Step :1600, avg score : -1.7, avg_cover_radius :  83.83, avg_sent_package:  49.16
+Step :1625, avg score : -2.2, avg_cover_radius :  76.52, avg_sent_package:  50.75
+Step :1650, avg score : -1.9, avg_cover_radius :  80.99, avg_sent_package:  49.31
+Step :1675, avg score : -2.2, avg_cover_radius :  76.73, avg_sent_package:  49.53
+Step :1700, avg score : -2.1, avg_cover_radius :  77.27, avg_sent_package:  51.04
+Step :1725, avg score : -2.1, avg_cover_radius :  79.60, avg_sent_package:  49.84
+Step :1750, avg score : -2.1, avg_cover_radius :  78.07, avg_sent_package:  50.07
+Step :1775, avg score : -2.0, avg_cover_radius :  79.26, avg_sent_package:  50.10
+Step :1800, avg score : -2.1, avg_cover_radius :  79.61, avg_sent_package:  50.75
+Step :1825, avg score : -2.9, avg_cover_radius :  70.21, avg_sent_package:  49.62
+Step :1850, avg score : -2.2, avg_cover_radius :  79.17, avg_sent_package:  50.55
+Step :1875, avg score : -1.7, avg_cover_radius :  82.60, avg_sent_package:  49.58
+Step :1900, avg score : -2.0, avg_cover_radius :  81.77, avg_sent_package:  50.77
+Step :1925, avg score : -2.0, avg_cover_radius :  79.46, avg_sent_package:  50.87
+Step :1950, avg score : -2.1, avg_cover_radius :  80.05, avg_sent_package:  49.75
+Step :1975, avg score : -1.9, avg_cover_radius :  80.90, avg_sent_package:  49.66
+Step :2000, avg score : -2.0, avg_cover_radius :  76.62, avg_sent_package:  49.46
+Step :2025, avg score : -2.2, avg_cover_radius :  77.55, avg_sent_package:  49.32
+Step :2050, avg score : -2.0, avg_cover_radius :  77.31, avg_sent_package:  49.86
+Step :2075, avg score : -2.5, avg_cover_radius :  73.79, avg_sent_package:  49.19
+Step :2100, avg score : -2.0, avg_cover_radius :  79.86, avg_sent_package:  49.60
+Step :2125, avg score : -1.9, avg_cover_radius :  80.31, avg_sent_package:  51.11
+Step :2150, avg score : -1.9, avg_cover_radius :  81.64, avg_sent_package:  49.54
+Step :2175, avg score : -1.9, avg_cover_radius :  81.76, avg_sent_package:  51.28
+Step :2200, avg score : -2.0, avg_cover_radius :  79.56, avg_sent_package:  50.24
+Step :2225, avg score : -1.8, avg_cover_radius :  81.42, avg_sent_package:  50.01
+Step :2250, avg score : -2.2, avg_cover_radius :  76.33, avg_sent_package:  49.89
+Step :2275, avg score : -2.2, avg_cover_radius :  76.16, avg_sent_package:  49.03
+Step :2300, avg score : -2.3, avg_cover_radius :  75.44, avg_sent_package:  49.82
+Step :2325, avg score : -2.2, avg_cover_radius :  79.57, avg_sent_package:  49.76
+Step :2350, avg score : -2.2, avg_cover_radius :  79.51, avg_sent_package:  49.94
+Step :2375, avg score : -1.5, avg_cover_radius :  84.14, avg_sent_package:  50.40
+Step :2400, avg score : -1.7, avg_cover_radius :  84.44, avg_sent_package:  48.54
+Step :2425, avg score : -2.2, avg_cover_radius :  76.50, avg_sent_package:  50.08
+Step :2450, avg score : -2.1, avg_cover_radius :  80.92, avg_sent_package:  49.93
+Step :2475, avg score : -2.1, avg_cover_radius :  80.34, avg_sent_package:  50.99
+Step :2500, avg score : -2.2, avg_cover_radius :  79.57, avg_sent_package:  51.47
+Step :2525, avg score : -1.8, avg_cover_radius :  83.01, avg_sent_package:  48.84
+Step :2550, avg score : -2.2, avg_cover_radius :  77.80, avg_sent_package:  50.45
+Step :2575, avg score : -2.2, avg_cover_radius :  77.45, avg_sent_package:  50.63
+Step :2600, avg score : -1.8, avg_cover_radius :  81.69, avg_sent_package:  48.98
+Step :2625, avg score : -1.6, avg_cover_radius :  83.29, avg_sent_package:  49.49
+Step :2650, avg score : -1.9, avg_cover_radius :  82.29, avg_sent_package:  50.94
+Step :2675, avg score : -2.0, avg_cover_radius :  78.83, avg_sent_package:  49.66
+Step :2700, avg score : -1.9, avg_cover_radius :  82.08, avg_sent_package:  50.60
+Step :2725, avg score : -2.0, avg_cover_radius :  77.95, avg_sent_package:  49.19
+Step :2750, avg score : -2.5, avg_cover_radius :  75.70, avg_sent_package:  50.34
+Step :2775, avg score : -2.4, avg_cover_radius :  78.08, avg_sent_package:  49.23
+Step :2800, avg score : -2.1, avg_cover_radius :  78.29, avg_sent_package:  49.35
+Step :2825, avg score : -2.3, avg_cover_radius :  76.34, avg_sent_package:  50.90
+Step :2850, avg score : -1.5, avg_cover_radius :  85.72, avg_sent_package:  49.73
+Step :2875, avg score : -2.1, avg_cover_radius :  79.95, avg_sent_package:  50.77
+Step :2900, avg score : -1.7, avg_cover_radius :  83.78, avg_sent_package:  49.91
+Step :2925, avg score : -2.0, avg_cover_radius :  80.86, avg_sent_package:  50.42
+Step :2950, avg score : -1.8, avg_cover_radius :  83.51, avg_sent_package:  49.52
+Step :2975, avg score : -1.7, avg_cover_radius :  79.67, avg_sent_package:  49.39
+Step :3000, avg score : -2.2, avg_cover_radius :  78.58, avg_sent_package:  50.50
+Step :3025, avg score : -1.4, avg_cover_radius :  86.03, avg_sent_package:  50.08
+Step :3050, avg score : -2.2, avg_cover_radius :  77.40, avg_sent_package:  50.58
+Step :3075, avg score : -1.8, avg_cover_radius :  82.10, avg_sent_package:  50.42
+Step :3100, avg score : -1.9, avg_cover_radius :  80.63, avg_sent_package:  50.38
+Step :3125, avg score : -2.0, avg_cover_radius :  79.32, avg_sent_package:  49.49
+Step :3150, avg score : -1.8, avg_cover_radius :  83.67, avg_sent_package:  49.82
+Step :3175, avg score : -2.1, avg_cover_radius :  78.41, avg_sent_package:  49.17
+Step :3200, avg score : -2.3, avg_cover_radius :  80.64, avg_sent_package:  50.20
+Step :3225, avg score : -1.8, avg_cover_radius :  80.41, avg_sent_package:  50.54
+Step :3250, avg score : -2.6, avg_cover_radius :  73.84, avg_sent_package:  48.82
+Step :3275, avg score : -2.3, avg_cover_radius :  77.52, avg_sent_package:  49.90
+Step :3300, avg score : -2.2, avg_cover_radius :  78.18, avg_sent_package:  49.93
+Step :3325, avg score : -2.3, avg_cover_radius :  77.95, avg_sent_package:  50.38
+Step :3350, avg score : -2.9, avg_cover_radius :  71.83, avg_sent_package:  49.44
+Step :3375, avg score : -2.0, avg_cover_radius :  80.80, avg_sent_package:  50.60
+Step :3400, avg score : -1.8, avg_cover_radius :  82.35, avg_sent_package:  50.15
+Step :3425, avg score : -1.9, avg_cover_radius :  78.60, avg_sent_package:  49.44
+Step :3450, avg score : -2.0, avg_cover_radius :  82.67, avg_sent_package:  50.66
+Step :3475, avg score : -2.1, avg_cover_radius :  80.74, avg_sent_package:  49.66
+Step :3500, avg score : -2.2, avg_cover_radius :  78.17, avg_sent_package:  49.96
+Step :3525, avg score : -2.1, avg_cover_radius :  79.73, avg_sent_package:  50.59
+Step :3550, avg score : -2.3, avg_cover_radius :  75.44, avg_sent_package:  49.48
+Traceback (most recent call last):
+  File "/home/aiotlab/projects/cuongdm/MEC1/mec.py", line 69, in <module>
+    s_prime, r = envs.step(a)   # (n_env, num_frame, 2, h, w) and (n_env, 1)
+  File "/home/aiotlab/projects/cuongdm/MEC1/utils/A2C.py", line 98, in step
+    return self.step_wait()
+  File "/home/aiotlab/projects/cuongdm/MEC1/utils/A2C.py", line 81, in step_wait
+    results = [master_end.recv() for master_end in self.master_ends]
+  File "/home/aiotlab/projects/cuongdm/MEC1/utils/A2C.py", line 81, in <listcomp>
+    results = [master_end.recv() for master_end in self.master_ends]
+  File "/home/aiotlab/anaconda3/envs/thanhnt_vaipe/lib/python3.9/multiprocessing/connection.py", line 255, in recv
+    buf = self._recv_bytes()
+  File "/home/aiotlab/anaconda3/envs/thanhnt_vaipe/lib/python3.9/multiprocessing/connection.py", line 419, in _recv_bytes
+    buf = self._recv(4)
+  File "/home/aiotlab/anaconda3/envs/thanhnt_vaipe/lib/python3.9/multiprocessing/connection.py", line 384, in _recv
+    chunk = read(handle, remaining)
+KeyboardInterrupt
