@@ -20,7 +20,7 @@ car_speed_min: 50
 car_speed_max: 150
 
 air_discount: 0.1
-alpha: 0.33
+alpha: 0.5
 beta: 0.33
 theta: 0.2
 

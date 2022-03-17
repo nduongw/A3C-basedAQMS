@@ -68,7 +68,7 @@ class Model(nn.Module):
         # self.lstm = nn.LSTM(input_size= self.lstm_input_size, hidden_size=self.hidden_size, num_layers=self.num_layers, batch_first=True).to(self.device)
 
         in_lstm = torch.cat(out_cnn, 1)  # in_lstm = (n_env, num_frame, h/8 * w/8 * out_channel3)
-        out_lstm, self.hidden = self.lstm(in_lstm, self.hidden)
+        out_lstm, hidden = self.lstm(in_lstm)
 
         out_shared_layers = out_lstm[:,-1,:]    # out_shared_layers = (n_env, hidden_size)
 
