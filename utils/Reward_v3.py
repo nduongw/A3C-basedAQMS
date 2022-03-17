@@ -26,6 +26,6 @@ def calc_reward(action, cover_map, present_map, new_cover_map, Config):
 
     spatial_overlap = len(num_car_on) * ((Config.get('cover_radius') * 2 + 1) ** 2) - torch.count_nonzero(torch.where(new_cover_map == 1, 1, 0)).item() 
     # reward =  alpha * on_reward_t + beta * off_reward_t - (1 - alpha - beta) * spatial_overlap
-    reward =  alpha * off_reward_t  - (1 - alpha - beta) * spatial_overlap
+    reward =  alpha * on_reward_t  - (1 - alpha ) * spatial_overlap
 
     return reward

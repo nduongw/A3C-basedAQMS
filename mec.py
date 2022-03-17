@@ -51,7 +51,7 @@ def test(step_idx, model, env):
 
 if __name__ == '__main__':
     mp.set_start_method('spawn')
-    wandb.init(project="MEC-project", entity="mec", name='no batchnorm, rw3 remove on_reward')
+    wandb.init(project="MEC-project", entity="mec", name='remove off_reward and pi_off')
 
     env = Env(Config)
     envs = ParallelEnv(n_train_processes)
@@ -103,10 +103,10 @@ if __name__ == '__main__':
 
         pi_a_on = torch.mean(torch.log(pi_on), dim=(1, 2)) #(update_interval*n_env)
         pi_a_off = torch.mean(torch.log(pi_off), dim=(1, 2)) #(update_interval*n_env)
-        loss = -((pi_a_on + pi_a_off) * advantage.detach()).mean() +\
+        loss = -((pi_a_on ) * advantage.detach()).mean() +\
             nn.MSELoss()(torch.squeeze(torch.cat(v_list,dim=0)), td_target_vec)
 
-        policy_loss.append(((pi_a_on + pi_a_off) * advantage.detach()).mean())
+        policy_loss.append(((pi_a_on ) * advantage.detach()).mean())
         value_loss.append(nn.MSELoss()(torch.squeeze(torch.cat(v_list,dim=0)), td_target_vec))
         optimizer.zero_grad()
         loss.backward()
