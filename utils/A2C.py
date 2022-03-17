@@ -41,14 +41,9 @@ def worker(worker_id, master_end, worker_end):
         elif cmd == 'reset':
             ob = env.reset()
             worker_end.send(ob)
-        elif cmd == 'reset_task':
-            ob = env.reset_task()
-            worker_end.send(ob)
         elif cmd == 'close':
             worker_end.close()
             break
-        elif cmd == 'get_spaces':
-            worker_end.send((env.observation_space, env.action_space))
         else:
             raise NotImplementedError
 

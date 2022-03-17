@@ -41,7 +41,6 @@ def test(step_idx, model, env):
             avg_a = (send_car / total_car) * 100
             cover_lst.append(cover_score / total_score * 100)
             sent_lst.append(avg_a)
-            
             s = s_prime
             score += r
             done += 1
@@ -51,12 +50,13 @@ def test(step_idx, model, env):
 
 if __name__ == '__main__':
     mp.set_start_method('spawn')
-    # wandb.init(project="MEC-project", entity="mec", name='fix init lstm fc_pi; modify v_list, pi_list, lr = 0.0001, prob = 0.5, rw3, steps = 5000, 2 processes')
-
+    wandb.init(project="MEC-project", entity="mec", name='no pooling, batchnorm')
+    
     env = Env(Config)
     envs = ParallelEnv(n_train_processes)
     model = ActorCritic().to(device)
     optimizer = torch.optim.Adam(model.model.parameters(), lr=learning_rate)
+    # optimizer = torch.optim.Adam([{'params': model.model.parameters()}, {'params': model.model.fc_v.parameters(), 'lr': learning_rate * 5}], lr=learning_rate)
     
     step_idx = 0
     policy_loss = []
@@ -71,16 +71,15 @@ if __name__ == '__main__':
             a = envs.choose_action(prob.detach()) # (n_env, h, w)
             s_prime, r = envs.step(a)   # (n_env, num_frame, 2, h, w) and (n_env, 1)
 
-            s_list.append(s)
-            a_list.append(a)
-            r_list.append(r)
+            s_list.append(s) #(update_interval, n_env, num_frame, 2, h, w)
+            a_list.append(a) #(update_interval, n_env, h, w)
+            r_list.append(r) #(update_interval, n_env)
 
-            v_list.append(v)
-            pi_list.append(prob)
+            v_list.append(v) #(update_interval, n_env)
+            pi_list.append(prob) #(update_interval, n_env, h, w)
 
             s = s_prime
             step_idx += 1
-        import pdb; pdb.set_trace()
         s_final = torch.from_numpy(s_prime).float()     # (n_env, num_frame, 2, h, w)
         v_final = model.v(s_final.to(device)).to('cpu').detach().clone().numpy()     # (n_env, 1)
         td_target = compute_target(v_final, r_list)     # (update_interval, n_env)
@@ -91,7 +90,7 @@ if __name__ == '__main__':
         map_car_vec = s_vec[:,-1, 0, :, :].detach().clone().to(device)   #(n_env*len(s_list), h, w)
         # a_vec = torch.tensor(a_list).reshape(-1).unsqueeze(1)
         a_vec = torch.from_numpy(np.concatenate(a_list)).float().to(device)      #(n_env*len(s_list), h, w)
-        advantage = td_target_vec - (torch.cat(v_list,dim=0))    #(update_interval*n_env)
+        advantage = td_target_vec - torch.squeeze(torch.cat(v_list,dim=0))    #(update_interval*n_env)
 
         pi = torch.cat(pi_list, dim=0)
         # pi = model.pi(s_vec.to(device))        #(n_env*len(s_list), h, w)
@@ -104,18 +103,18 @@ if __name__ == '__main__':
 
         pi_a_on = torch.mean(torch.log(pi_on), dim=(1, 2)) #(update_interval*n_env)
         pi_a_off = torch.mean(torch.log(pi_off), dim=(1, 2)) #(update_interval*n_env)
-        loss = -((pi_a_on + pi_a_off) * advantage.detach()).mean() +\
-            nn.MSELoss()(torch.cat(v_list,dim=0), td_target_vec)
+        loss = -((pi_a_on + pi_a_off) * advantage.detach()).mean() + nn.MSELoss()(torch.squeeze(torch.cat(v_list,dim=0)), td_target_vec)
 
         policy_loss.append(((pi_a_on + pi_a_off) * advantage.detach()).mean())
-        value_loss.append(nn.MSELoss()(torch.cat(v_list,dim=0), td_target_vec))
+        value_loss.append(nn.MSELoss()(torch.squeeze(torch.cat(v_list,dim=0)), td_target_vec))
+        
         optimizer.zero_grad()
         loss.backward()
         optimizer.step()
 
         if step_idx % PRINT_INTERVAL == 0:
             # print(f'Done {step_idx} / {max_train_steps}, policy loss: {sum(policy_loss) / PRINT_INTERVAL}, value loss: {sum(value_loss) / PRINT_INTERVAL}')
-            wandb.log({'Policy loss' : sum(policy_loss) / PRINT_INTERVAL, 'value_loss': sum(value_loss) / PRINT_INTERVAL, 'step': step_idx})
+            wandb.log({'Policy loss' : sum(policy_loss) / PRINT_INTERVAL, 'Value loss': sum(value_loss) / PRINT_INTERVAL, 'step': step_idx})
             policy_loss.clear()
             value_loss.clear()
 

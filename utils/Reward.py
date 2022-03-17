@@ -1,9 +1,9 @@
 from utils.Utils import *
 import torch
 
-def calc_reward(action, cover_map, present_map, new_cover_map, Config):
+def calc_reward(action, cover_map, current_map, new_cover_map, Config):
     num_car_on = count_car(action)
-    total_car = count_car(present_map)
+    total_car = count_car(current_map)
 
     alpha = Config.get("alpha")
     beta = Config.get("beta")
