@@ -1,8 +1,0 @@
-Traceback (most recent call last):
-  File "/home/aiotlab/projects/cuongdm/MEC1/mec.py", line 102, in <module>
-    loss.backward()
-  File "/home/aiotlab/anaconda3/envs/thanhnt_vaipe/lib/python3.9/site-packages/torch/_tensor.py", line 307, in backward
-    torch.autograd.backward(self, gradient, retain_graph, create_graph, inputs=inputs)
-  File "/home/aiotlab/anaconda3/envs/thanhnt_vaipe/lib/python3.9/site-packages/torch/autograd/__init__.py", line 154, in backward
-    Variable._execution_engine.run_backward(
-RuntimeError: CUDA out of memory. Tried to allocate 26.00 MiB (GPU 0; 9.78 GiB total capacity; 1.31 GiB already allocated; 29.88 MiB free; 1.37 GiB reserved in total by PyTorch) If reserved memory is >> allocated memory try setting max_split_size_mb to avoid fragmentation.  See documentation for Memory Management and PYTORCH_CUDA_ALLOC_CONF

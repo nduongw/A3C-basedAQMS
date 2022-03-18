@@ -20,7 +20,7 @@ car_speed_min: 50
 car_speed_max: 150
 
 air_discount: 0.1
-alpha: 0.5
+alpha: 0.6
 beta: 0.33
 theta: 0.2
 
@@ -28,7 +28,7 @@ n_train_processes: 2
 learning_rate: 0.0001
 update_interval: 10
 gamma: 0.99
-max_train_steps: 5000
+max_train_steps: 10000
 
 batch_size:
 cnn:

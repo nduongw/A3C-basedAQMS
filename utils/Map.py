@@ -1,7 +1,7 @@
 import random
 
 from utils.Utils import *
-from utils.Reward_v3 import calc_reward
+from utils.Reward_v4 import calc_reward
 
 class Map:
     def __init__(self, Config):
@@ -11,7 +11,7 @@ class Map:
 
     def create_map(self):
         self.map = generate_map(self.Config)
-        self.cover_map = generate_air_quality_map(self.map, self.Config)
+        # self.cover_map = generate_air_quality_map(self.map, self.Config)
 
     def run_per_second(self):
         for i in range(self.map.shape[0] - 1, -1, -1):

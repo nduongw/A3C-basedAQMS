@@ -1,4 +1,0 @@
-Traceback (most recent call last):
-  File "/home/aiotlab/projects/cuongdm/MEC1/mec.py", line 95, in <module>
-    pi_a_on = torch.mean(torch.log(torch.where(pi*a_vec != 0, pi*a_vec, 1)), dim=(1, 2)) #(update_interval*n_env)
-RuntimeError: expected scalar type float but found long int

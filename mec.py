@@ -28,6 +28,7 @@ def test(step_idx, model, env):
     s = env.reset()
     cover_lst = []
     sent_lst = []
+    ovl_lst = []
 
     for _ in range(num_test):
         while done < 150:
@@ -36,22 +37,27 @@ def test(step_idx, model, env):
             send_car = len(count_car(a))
             total_car = len(count_car(env.env.map))
             s_prime, r = env.step(a)
+            
             cover_score = torch.count_nonzero(env.env.cover_map).item()
             total_score = Config.get('road_length') * Config.get('road_width')
             avg_a = (send_car / total_car) * 100
+            
+            overlap = len(count_car(a)) * (Config.get('cover_radius') * 2 + 1) ** 2 - torch.count_nonzero(env.env.cover_map).item()
+            
             cover_lst.append(cover_score / total_score * 100)
             sent_lst.append(avg_a)
+            ovl_lst.append(overlap)
             
             s = s_prime
             score += r
             done += 1
 
-    print(f"Step :{step_idx}, avg score : {score/num_test:.1f}, avg_cover_radius : {sum(cover_lst) / len(cover_lst) : .2f}, avg_sent_package: {sum(sent_lst) / len(sent_lst) : .2f}")
-    wandb.log({'avg_score': score/num_test, 'avg_cover_radius': sum(cover_lst) / len(cover_lst), 'avg_sent_package': sum(sent_lst) / len(sent_lst)})
+    print(f"Step :{step_idx}, avg score : {score/num_test:.1f}, avg_cover_radius : {sum(cover_lst) / len(cover_lst) : .2f}, avg_sent_package: {sum(sent_lst) / len(sent_lst) : .2f}, avg_overlap: {sum(ovl_lst) / len(ovl_lst)}")
+    wandb.log({'Avg score': score/num_test, 'Avg cover radius': sum(cover_lst) / len(cover_lst), 'Avg sent package': sum(sent_lst) / len(sent_lst), 'Overlap': overlap})
 
 if __name__ == '__main__':
     mp.set_start_method('spawn')
-    wandb.init(project="MEC-project", entity="mec", name='remove off_reward and pi_off')
+    wandb.init(project="MEC-project", entity="mec", name='rv4 has on_reward and loss has pi_on, alpha=0.6')
 
     env = Env(Config)
     envs = ParallelEnv(n_train_processes)
@@ -114,7 +120,7 @@ if __name__ == '__main__':
 
         if step_idx % PRINT_INTERVAL == 0:
             # print(f'Done {step_idx} / {max_train_steps}, policy loss: {sum(policy_loss) / PRINT_INTERVAL}, value loss: {sum(value_loss) / PRINT_INTERVAL}')
-            wandb.log({'Policy loss' : sum(policy_loss) / PRINT_INTERVAL, 'value_loss': sum(value_loss) / PRINT_INTERVAL, 'step': step_idx})
+            wandb.log({'Policy loss' : sum(policy_loss) / PRINT_INTERVAL, 'Value loss': sum(value_loss) / PRINT_INTERVAL, 'Step': step_idx})
             policy_loss.clear()
             value_loss.clear()
 

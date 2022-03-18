@@ -37,14 +37,22 @@ def count_car(road):
 def set_cover_radius(road, car_list):
     cover_map = torch.zeros(road.shape[0], road.shape[1])
 
-    # print(car_coord[0], car_coord[1])
     for car in car_list:
-        # print(car[0], car[1])
         for i in range (max(car[0] - Config.get('cover_radius'), 0), 1 + min(car[0] + Config.get('cover_radius'), road.shape[0] - 1)):
             for j in range(max(car[1] - Config.get('cover_radius'), 0),1 + min(car[1] + Config.get('cover_radius'), road.shape[1] - 1)):
                 cover_map[i, j] = 1
-
+                
     return cover_map
+
+def calc_overlap(car_list):
+    overlap_map = torch.zeros(Config.get('road_length'), Config.get('road_width'))
+    
+    for car in car_list:
+        for i in range (max(car[0] - Config.get('cover_radius'), 0), 1 + min(car[0] + Config.get('cover_radius'), Config.get('road_length') - 1)):
+            for j in range(max(car[1] - Config.get('cover_radius'), 0),1 + min(car[1] + Config.get('cover_radius'), Config.get('road_width') - 1)):
+                overlap_map[i, j] += 1
+                
+    return overlap_map
 
 def generate_air_quality_map(road, Config):
     car_list = count_car(road)

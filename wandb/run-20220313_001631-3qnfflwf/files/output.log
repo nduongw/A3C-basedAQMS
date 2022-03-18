@@ -1,6 +1,0 @@
-
-<class 'torch.Tensor'>
-Traceback (most recent call last):
-  File "/home/aiotlab/projects/cuongdm/MEC1/mec.py", line 96, in <module>
-    pi_on = torch.where(pi*a_vec != float(0), pi*a_vec, float(1))
-RuntimeError: expected scalar type float but found double
