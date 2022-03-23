@@ -23,12 +23,14 @@ def calc_reward(action, cover_map, current_map, new_cover_map, Config):
     num_car_on = count_car(action)
     total_car = count_car(current_map)
 
-    reward_car_on = (new_cover_map - cover_map).sum()#/torch.count_nonzero(new_cover_map - cover_map).item()
-    on_reward_t = (1 / (1 + len(num_car_on))) * reward_car_on
+    difference = new_cover_map - cover_map
+    on_reward = torch.where(difference == 1, 1, 0)
+    # on_reward_t = (1 / (1 + len(num_car_on))) * torch.count_nonzero(on_reward).item()
+    on_reward_t = torch.count_nonzero(on_reward).item()
     
     off_map = current_map - action
     off_cover_map = set_cover_radius(off_map, count_car(off_map))
-    reward_car_off = (off_cover_map * new_cover_map).sum()
+    reward_car_off = off_cover_map * new_cover_map
     off_reward_t = (1 / (1 + len(total_car) - len(num_car_on))) * reward_car_off
 
     # old_cmap = torch.where(cover_map != 0, 1, 0)
@@ -37,8 +39,8 @@ def calc_reward(action, cover_map, current_map, new_cover_map, Config):
     # overlap_r = torch.count_nonzero(torch.where(overlap == 2, 1, 0)).item()
     
     spatial_overlap = len(num_car_on) * ((Config.get('cover_radius') * 2 + 1) ** 2) - torch.count_nonzero(torch.where(new_cover_map == 1, 1, 0)).item() 
-    spatial_overlap /= np.sqrt(len(total_car))
+    # spatial_overlap /= np.sqrt(len(total_car))
     reward =  alpha * on_reward_t - (1 - alpha) * spatial_overlap
 
-    writer.writerow((on_reward_t.item(), off_reward_t.item(), spatial_overlap))
+    writer.writerow((on_reward_t, spatial_overlap))
     return reward

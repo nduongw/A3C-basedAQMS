@@ -38,6 +38,7 @@ class Model(nn.Module):
 
         self.fc_v = nn.Linear(in_features=self.hidden_size, out_features=1)
         self.lstm_input_size = int(self.Config.get('road_length')/8) * int(self.Config.get('road_width')/8) * self.out_channels3
+        self.fc_lstm = nn.Linear(in_features=self.Config.get('road_length')*self.Config.get('road_width')*self.out_channels3, out_features=self.lstm_input_size)
         self.lstm = nn.LSTM(input_size=self.lstm_input_size, hidden_size=self.hidden_size, num_layers=self.num_layers, batch_first=True)
 
         self.fc_pi = nn.Linear(in_features=self.hidden_size, out_features=self.Config.get('road_length')*self.Config.get('road_width'))
@@ -58,11 +59,12 @@ class Model(nn.Module):
 
         for i in range(self.Config.get("num_frame")):
             xi = x[:,i,:,:,:]    # xi = (n_env, 2, h, w)
-            out_conv1 = self.pool(self.relu(self.batchnorm1(self.conv1(xi))))
-            out_conv2 = self.pool(self.relu(self.batchnorm2(self.conv2(out_conv1))))
-            out_conv3 = self.pool(self.relu(self.batchnorm3(self.conv3(out_conv2))))
+            out_conv1 = self.relu(self.batchnorm1(self.conv1(xi)))
+            out_conv2 = self.relu(self.batchnorm2(self.conv2(out_conv1)))
+            out_conv3 = self.relu(self.batchnorm3(self.conv3(out_conv2)))
             out_flatten = self.flatten(out_conv3)       # (n_env, n)
-            out_cnn.append(torch.unsqueeze(out_flatten, dim=1)) # (n_env, 1, n)
+            out_fc_lstm = self.fc_lstm(out_flatten)
+            out_cnn.append(torch.unsqueeze(out_fc_lstm, dim=1)) # (n_env, 1, n)
         
         # self.lstm_input_size = out_cnn[0].size()[2]     # n
         # self.lstm = nn.LSTM(input_size= self.lstm_input_size, hidden_size=self.hidden_size, num_layers=self.num_layers, batch_first=True).to(self.device)

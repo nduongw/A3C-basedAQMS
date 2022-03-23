@@ -1,7 +1,7 @@
 import random
 
 from utils.Utils import *
-from utils.Reward_v4 import calc_reward
+from utils.Reward_v6 import calc_reward
 
 class Map:
     def __init__(self, Config):
@@ -28,8 +28,7 @@ class Map:
         for i in range(self.map.shape[0]):
             for j in range(self.map.shape[1]):
                 if self.map[i, j] == 0 and i < self.Config.get('car_spawn_idx') and j not in get_coordinate_dis(self.Config):
-                    a = random.random()
-                    # print(a)
+                    a = random.uniform(0, 1)
                     if a > self.Config.get('car_spawn_prob'):
                         self.map[i, j] = 0
                     else:
@@ -57,3 +56,6 @@ class Map:
         action = self.map * on_off_map.to('cpu')
         return action
 
+    def seed(self, seed):
+        torch.manual_seed(seed)
+        random.seed(seed)

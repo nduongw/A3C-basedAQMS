@@ -1,3 +1,4 @@
+from tokenize import group
 import torch 
 import torch.multiprocessing as mp
 import torch.nn.functional as F
@@ -18,7 +19,7 @@ learning_rate = Config.get("learning_rate")
 update_interval = Config.get("update_interval")
 max_train_steps = Config.get("max_train_steps")
 
-PRINT_INTERVAL = update_interval * 2
+PRINT_INTERVAL = update_interval * 5
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 def test(step_idx, model, env):
@@ -36,13 +37,18 @@ def test(step_idx, model, env):
             a = env.env.map_to_action(torch.squeeze(prob)) # ( h, w)
             send_car = len(count_car(a))
             total_car = len(count_car(env.env.map))
+            
+            car_list = count_car(a)
+            new_cover_map = set_cover_radius(a, car_list)
+            new_cover_map = torch.where(new_cover_map > env.env.cover_map, new_cover_map, env.env.cover_map)
+            overlap = send_car * ((Config.get('cover_radius') * 2 + 1) ** 2) - torch.count_nonzero(torch.where(new_cover_map == 1, 1, 0)).item()
+            overlap /= Config.get('road_length') * Config.get('road_width')
+            
             s_prime, r = env.step(a)
             
             cover_score = torch.count_nonzero(env.env.cover_map).item()
             total_score = Config.get('road_length') * Config.get('road_width')
             avg_a = (send_car / total_car) * 100
-            
-            overlap = len(count_car(a)) * (Config.get('cover_radius') * 2 + 1) ** 2 - torch.count_nonzero(env.env.cover_map).item()
             
             cover_lst.append(cover_score / total_score * 100)
             sent_lst.append(avg_a)
@@ -52,12 +58,12 @@ def test(step_idx, model, env):
             score += r
             done += 1
 
-    print(f"Step :{step_idx}, avg score : {score/num_test:.1f}, avg_cover_radius : {sum(cover_lst) / len(cover_lst) : .2f}, avg_sent_package: {sum(sent_lst) / len(sent_lst) : .2f}, avg_overlap: {sum(ovl_lst) / len(ovl_lst)}")
-    wandb.log({'Avg score': score/num_test, 'Avg cover radius': sum(cover_lst) / len(cover_lst), 'Avg sent package': sum(sent_lst) / len(sent_lst), 'Overlap': overlap})
+    # print(f"Step :{step_idx}, avg score : {score/num_test:.1f}, avg_cover_radius : {sum(cover_lst) / len(cover_lst) : .2f}, avg_sent_package: {sum(sent_lst) / len(sent_lst) : .2f}, avg_overlap: {sum(ovl_lst) / len(ovl_lst)}")
+    wandb.log({'Avg score': score/num_test, 'Avg cover radius': sum(cover_lst) / len(cover_lst), 'Avg sent package': sum(sent_lst) / len(sent_lst), 'Overlap': sum(ovl_lst) / len(ovl_lst)})
 
 if __name__ == '__main__':
     mp.set_start_method('spawn')
-    wandb.init(project="MEC-project", entity="mec", name='rv4 has on_reward and loss has pi_on, alpha=0.6')
+    wandb.init(project="Crowdsensing", entity="aiotlab", name='reward6, alpha=.65, no pooling, scaled loss', group="reward6")
 
     env = Env(Config)
     envs = ParallelEnv(n_train_processes)
@@ -105,21 +111,27 @@ if __name__ == '__main__':
         ones_map = torch.ones_like(pi)
 
         pi_on = torch.where(pi*a_vec == zeros_map, ones_map, pi*a_vec)
-        pi_off = torch.where(1 - pi*(map_car_vec - a_vec) == zeros_map, ones_map, 1 - pi*(map_car_vec - a_vec))
+        # pi_off = torch.where((1 - pi*(map_car_vec - a_vec)) == zeros_map, ones_map, 1 - pi*(map_car_vec - a_vec))
 
         pi_a_on = torch.mean(torch.log(pi_on), dim=(1, 2)) #(update_interval*n_env)
-        pi_a_off = torch.mean(torch.log(pi_off), dim=(1, 2)) #(update_interval*n_env)
-        loss = -((pi_a_on ) * advantage.detach()).mean() +\
-            nn.MSELoss()(torch.squeeze(torch.cat(v_list,dim=0)), td_target_vec)
+        # pi_a_off = torch.mean(torch.log(pi_off), dim=(1, 2)) #(update_interval*n_env)
+        loss_policy = -((pi_a_on ) * advantage.detach()).mean() * 100000
+        loss_value = nn.MSELoss()(torch.squeeze(torch.cat(v_list,dim=0)), td_target_vec)
 
-        policy_loss.append(((pi_a_on ) * advantage.detach()).mean())
-        value_loss.append(nn.MSELoss()(torch.squeeze(torch.cat(v_list,dim=0)), td_target_vec))
+        total_loss = loss_policy + loss_value
+        policy_loss.append(-loss_policy)
+        value_loss.append(loss_value)
+        
         optimizer.zero_grad()
-        loss.backward()
+        total_loss.backward()
         optimizer.step()
+        
+        # optimizer_policy.zero_grad()
+        # loss_policy.backward()
+        # optimizer_policy.step()
 
         if step_idx % PRINT_INTERVAL == 0:
-            # print(f'Done {step_idx} / {max_train_steps}, policy loss: {sum(policy_loss) / PRINT_INTERVAL}, value loss: {sum(value_loss) / PRINT_INTERVAL}')
+            print(f'Done {step_idx} / {max_train_steps}, policy loss: {sum(policy_loss) / PRINT_INTERVAL}, value loss: {sum(value_loss) / PRINT_INTERVAL}')
             wandb.log({'Policy loss' : sum(policy_loss) / PRINT_INTERVAL, 'Value loss': sum(value_loss) / PRINT_INTERVAL, 'Step': step_idx})
             policy_loss.clear()
             value_loss.clear()
@@ -128,3 +140,4 @@ if __name__ == '__main__':
 
     envs.close()
 
+    torch.save(model.state_dict(), 'trained_model_scaledloss.pth')
