@@ -1,4 +1,6 @@
+from matplotlib.pyplot import sci
 import torch
+import scipy.stats
 import yaml
 
 with open('config/hyperparameter.yaml') as f:
@@ -25,6 +27,27 @@ def generate_map(Config):
 
     return new_road
 
+# def generate_map(Config, roadmap):
+#     for i in range(Config.get('road_number')):
+#         x_delta = Config.get('x_max')[i] - Config.get('x_min')[i]
+#         y_delta = Config.get('road_length')
+
+#         area_total = x_delta * y_delta
+        
+#         num_points = scipy.stats.poisson(Config.get('lambda_list')[i] * area_total).rvs()
+#         # print(num_points)
+#         # print('--------')
+#         xx = x_delta * scipy.stats.uniform.rvs(0, 1, ((num_points, 1))) + Config.get('x_min')[i]
+#         yy = y_delta * scipy.stats.uniform.rvs(0, 1, ((num_points, 1)))
+        
+#         x_idx = xx.astype(int)
+#         y_idx = yy.astype(int)
+        
+#         for x, y in zip(x_idx, y_idx):
+#             # print(f'{x.item()} -- {y.item()}')
+#             roadmap[y.item(), x.item()] = 1
+        
+
 def count_car(road):
     car_list = []
     for i in range(road.shape[0]):
@@ -50,9 +73,10 @@ def calc_overlap(car_list):
     for car in car_list:
         for i in range (max(car[0] - Config.get('cover_radius'), 0), 1 + min(car[0] + Config.get('cover_radius'), Config.get('road_length') - 1)):
             for j in range(max(car[1] - Config.get('cover_radius'), 0),1 + min(car[1] + Config.get('cover_radius'), Config.get('road_width') - 1)):
-                overlap_map[i, j] += 1
-                
-    return overlap_map
+                    overlap_map[i, j] += 1
+    
+    overlap = torch.count_nonzero(torch.where(overlap_map > 1, torch.ones_like(overlap_map), torch.zeros_like(overlap_map))).item()          
+    return overlap
 
 def generate_air_quality_map(road, Config):
     car_list = count_car(road)
@@ -60,7 +84,6 @@ def generate_air_quality_map(road, Config):
     
     return cover_map
 
-#tra ve list la index cua le duong
 def get_coordinate_dis(Config):
     list_coord = []
     a = 0

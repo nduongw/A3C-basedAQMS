@@ -1,5 +1,6 @@
 from hashlib import new
 import torch
+import random
 import numpy as np
 from utils.Map import Map
 from collections import deque
@@ -36,5 +37,6 @@ class Env:
     
     def seed(self, seed):
         torch.manual_seed(seed)
+        random.seed(seed)
         np.random.seed(seed)
 

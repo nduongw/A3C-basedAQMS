@@ -1,56 +1,54 @@
-change_time: 15
 cover_radius: 5
 
 num_frame: 4
 action_prob: 0.5
 action_range: 2
 
-road_length: 250
-road_width: 42
+road_length: 2500
+road_width: 22
 
 road_number: 2
 generate_prob: 0.995
 
-road_width_list: [20, 20]
+road_width_list: [10, 10]
 road_dis_list: [2]
 
 car_spawn_idx: 250
 car_spawn_prob: 0.003
-car_speed_min: 50
-car_speed_max: 150
+car_speed_min: 165
+car_speed_max: 333
 
-air_discount: 0.1
-alpha: 0.65
-beta: 0.33
+air_discount: 0.2
+alpha: 0.3
 theta: 0.2
 
-n_train_processes: 3
+beta: 0.001
+zeta: 0.5
+
+n_train_processes: 2
 learning_rate: 0.0001
 update_interval: 5
 gamma: 0.99
-max_train_steps: 10000
+max_train_steps: 5000
 
 batch_size:
 cnn:
     in_channels1: 2
-    out_channels1: 32
+    out_channels1: 4
     kernel_size1: 5
+    stride1: 2
 
-    in_channels2: 32
-    out_channels2: 16
+    in_channels2: 4
+    out_channels2: 8
     kernel_size2: 3
+    stride2: 1
 
-    in_channels3: 16
-    out_channels3: 1
-    kernel_size3: 1
-
-    # in_features_fc:
-    out_features_fc: 24
-    kernel_size_maxpool: 3
-    stride_maxpool: 1
-    padding_maxpool: 1
+    in_channels3: 8
+    out_channels3: 16
+    kernel_size3: 3
+    stride3: 1
 
 lstm:
     # input_size: 3
-    hidden_size: 64
+    hidden_size: 128
     num_layers: 1

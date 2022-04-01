@@ -1,17 +1,23 @@
 import yaml
 import torch
 import numpy as np
+import argparse
 from random import sample
 
 from utils.Map import Map 
 from utils.Utils import calc_overlap, count_car, set_cover_radius
-from utils.A2C import ActorCritic
-from utils.Env import Env
+# from utils.A2C import ActorCritic
+# from utils.Env import Env
 
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
 with open('config/hyperparameter.yaml') as f:
     Config = yaml.safe_load(f)
+
+parser = argparse.ArgumentParser()
+parser.add_argument('prob', type=float, help='Probability for sending packages')
+
+args = parser.parse_args()
 
 def test(model, env):
     score = 0.0
@@ -32,7 +38,7 @@ def test(model, env):
             car_list = count_car(a)
             new_cover_map = set_cover_radius(a, car_list)
             new_cover_map = torch.where(new_cover_map > env.env.cover_map, new_cover_map, env.env.cover_map)
-            overlap = send_car * ((Config.get('cover_radius') * 2 + 1) ** 2) - torch.count_nonzero(torch.where(new_cover_map == 1, 1, 0)).item()
+            overlap = calc_overlap(count_car(a))
             overlap /= Config.get('road_length') * Config.get('road_width')
             
             s_prime, r = env.step(a)
@@ -55,11 +61,12 @@ def test(model, env):
 demo_map = Map(Config)
 demo_map.seed(1)
 demo_map.create_map()
+# print(torch.count_nonzero(demo_map.map).item())
 cover_lst = []
 sent_lst = []
 ovl_lst = []
 for i in range(1):
-    prob = (i + 4.5) * 0.1
+    prob = args.prob
     for _ in range(150):
         car = count_car(demo_map.map)
         action = sample(car, int(len(car) * prob))
@@ -79,16 +86,16 @@ for i in range(1):
         cover_lst.append(cover)
         sent_lst.append(sent / total)
         ovl_lst.append(overlap)
-        print(f'cover: {cover} - overlap: {overlap} - sent_car: {len(action)} - total_car: {len(car)}')
+        # print(f'cover: {cover} - overlap: {overlap} - sent_car: {len(action)} - total_car: {len(car)}')
 
-    print(f'Prob: 0.45 : Avg cover: {sum(cover_lst) / len(cover_lst)},  Avg sent: {sum(sent_lst) / len(sent_lst)}, Avg Overlap: {sum(ovl_lst) / len(ovl_lst)}')
+    print(f'Prob: {prob} : Avg cover: {sum(cover_lst) / len(cover_lst)},  Avg sent: {sum(sent_lst) / len(sent_lst)}, Avg Overlap: {sum(ovl_lst) / len(ovl_lst)}')
     print('--------------------------')
 
 # model
-print('--------------------------')
-print('model results')
-env = Env(Config)
-model = ActorCritic().to(device)
-model.load_state_dict(torch.load('trained_model_rw6_alpha_07_lr_104.pth'))
-model.eval()
-test(model, env)
+# print('--------------------------')
+# print('model results')
+# env = Env(Config)
+# model = ActorCritic().to(device)
+# model.load_state_dict(torch.load('trained_model_rw6_alpha_07_lr_104.pth'))
+# model.eval()
+# test(model, env)

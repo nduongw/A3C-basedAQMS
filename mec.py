@@ -41,7 +41,7 @@ def test(step_idx, model, env):
             car_list = count_car(a)
             new_cover_map = set_cover_radius(a, car_list)
             new_cover_map = torch.where(new_cover_map > env.env.cover_map, new_cover_map, env.env.cover_map)
-            overlap = send_car * ((Config.get('cover_radius') * 2 + 1) ** 2) - torch.count_nonzero(torch.where(new_cover_map == 1, 1, 0)).item()
+            overlap = calc_overlap(count_car(a))
             overlap /= Config.get('road_length') * Config.get('road_width')
             
             s_prime, r = env.step(a)
@@ -63,7 +63,7 @@ def test(step_idx, model, env):
 
 if __name__ == '__main__':
     mp.set_start_method('spawn')
-    wandb.init(project="Crowdsensing", entity="aiotlab", name='reward6, alpha=.65, no pooling, scaled loss', group="reward6")
+    wandb.init(project="Crowdsensing", entity="aiotlab", name='3 cnn 5(2),3(1),3(1); hidden_size=128, cover=5, rw/1000, alpha, theta(0.3, 0,2), lr = 1e-4')
 
     env = Env(Config)
     envs = ParallelEnv(n_train_processes)
@@ -113,17 +113,19 @@ if __name__ == '__main__':
         pi_on = torch.where(pi*a_vec == zeros_map, ones_map, pi*a_vec)
         # pi_off = torch.where((1 - pi*(map_car_vec - a_vec)) == zeros_map, ones_map, 1 - pi*(map_car_vec - a_vec))
 
-        pi_a_on = torch.mean(torch.log(pi_on), dim=(1, 2)) #(update_interval*n_env)
+        log_pi_on = torch.mean(torch.log(pi_on), dim=(1, 2)) #(update_interval*n_env)
         # pi_a_off = torch.mean(torch.log(pi_off), dim=(1, 2)) #(update_interval*n_env)
-        loss_policy = -((pi_a_on ) * advantage.detach()).mean() * 100000
-        loss_value = nn.MSELoss()(torch.squeeze(torch.cat(v_list,dim=0)), td_target_vec)
+        loss_policy = -(log_pi_on * advantage.detach()).sum()
+        loss_entropy = Config.get('beta') * (torch.sum(pi_on * torch.log(pi_on), dim=(1, 2))).mean()
+        loss_value = Config.get('zeta') * nn.MSELoss()(torch.squeeze(torch.cat(v_list,dim=0)), td_target_vec)
 
-        total_loss = loss_policy + loss_value
-        policy_loss.append(-loss_policy)
+        optimizer.zero_grad()
+        total_policy_loss = (loss_policy + loss_entropy)
+        policy_loss.append(-total_policy_loss)
         value_loss.append(loss_value)
         
-        optimizer.zero_grad()
-        total_loss.backward()
+        total_policy_loss.backward(retain_graph=True)
+        loss_value.backward()
         optimizer.step()
         
         # optimizer_policy.zero_grad()
@@ -140,4 +142,4 @@ if __name__ == '__main__':
 
     envs.close()
 
-    torch.save(model.state_dict(), 'trained_model_scaledloss.pth')
+    torch.save(model.state_dict(), 'trained_model_1/4.pth')
